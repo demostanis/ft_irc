@@ -1,27 +1,36 @@
 NAME 		= ircserv
+MITM		= mitm
 
 CXX			= c++
 RM			= rm -f
 CLONE 		= git clone --depth=1
 
 CXXFLAGS	+= -Wall -Wextra -Werror -std=c++98
-LDLIBS		= -lX11 -lXext
+LDLIBS		=
 
 KDO			= kdolib
 KDOLIB		= $(KDO)/kdolib.a
 
 SRC 		= IrcServer.cpp\
-			  main.cpp\
+			  Socket.cpp\
+			  SocketTcpClient.cpp\
+			  SocketTcpServer.cpp
+
+SRC_MITM	= Mitm.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
 			  SocketTcpServer.cpp
 
 OBJ 		= $(SRC:.cpp=.o)
+OBJ_MITM	= $(SRC_MITM:.cpp=.o)
 
 all: $(NAME)
 
 $(NAME): $(KDOLIB) $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) $(KDOLIB) $(LDLIBS)
+
+$(MITM): $(KDOLIB) $(OBJ_MITM)
+	$(CXX) $(CXXFLAGS) -o $(MITM) $(OBJ_MITM) $(KDOLIB) $(LDLIBS)
 
 $(KDOLIB): $(KDO)
 	$(MAKE) -C $(KDO)
@@ -35,10 +44,12 @@ $(KDO):
 clean:
 	if [ -d "$(KDO)" ]; then $(MAKE) clean -C $(KDO); fi
 	$(RM) $(OBJ)
+	$(RM) $(OBJ_MITM)
 
 fclean: clean
 	$(RM) $(KDOLIB)
 	$(RM) $(NAME)
+	$(RM) $(MITM)
 
 clear: fclean
 	$(RM) -r $(KDO)

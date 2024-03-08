@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/08 11:47:35 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/08 18:41:22 by nlaerema         ###   ########.fr       */
 /*                                                                            */ /* ************************************************************************** */
 
 #include "SocketTcpServer.hpp"
@@ -79,7 +79,7 @@ int				SocketTcpServer::accept(SocketTcpClient *&client)
 	clientSocket = ::accept(this->fd, (struct sockaddr *)&clientAddr, &addrSize);
 	if (clientSocket == INVALID_FD)
 		return (EXIT_ERRNO);
-	this->clients[clientSocket].setFd(clientSocket);
+	this->clients[clientSocket].connect(clientSocket);
 	client = &this->clients[clientSocket];
 	return (EXIT_SUCCESS);
 }
@@ -146,9 +146,4 @@ int				SocketTcpServer::getAddrError(void) const
 int				SocketTcpServer::getBacklog(void) const
 {
 	return (this->backlog);
-}
-
-int				SocketTcpServer::getFd(void) const
-{
-	return (this->Socket::getFd());	
 }
