@@ -14,7 +14,8 @@ KDOLIB		= $(KDO)/kdolib.a
 SRC 		= IrcServer.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
-			  SocketTcpServer.cpp
+			  SocketTcpServer.cpp\
+			  Config.cpp
 
 SRC_MITM	= Mitm.cpp\
 			  Socket.cpp\
