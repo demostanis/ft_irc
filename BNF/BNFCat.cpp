@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 17:21:25 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:51:31 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,6 @@ BNFCat::BNFCat(std::string const &name, t_uint count, ...): BNFParser(name)
 	while (count--)
 		this->rules.push_back(va_arg(argList, BNFParser *)->clone());
 	va_end(argList);
-}
-
-BNFCat::BNFCat(std::vector<BNFParser *> rules, std::string const &name):	BNFParser(name)
-{
-	std::vector<BNFParser *>::const_iterator	cr;
-
-	for (cr = rules.begin(); cr != rules.end(); cr++)
-		this->rules.push_back((*cr)->clone());
 }
 
 BNFCat::BNFCat(BNFCat const &other):	BNFParser(other)
@@ -68,23 +60,53 @@ ssize_t		BNFCat::parse(std::string const &str, size_t start)
 	ssize_t	len;
 
 	this->value.clear();
-	for (cr = this->rules.begin(); cr != this->rules.end() && start + finalLen < str.length(); cr++)
+	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
 	{
 		len = (*cr)->parse(str, start + finalLen);
+		this->value += (*cr)->getValue();
 		if (len == BNF_PARSE_ERROR)
 			break;
-		this->value += (*cr)->getValue();
 		finalLen += len;	
 	}
 	if (cr != this->rules.end())
 	{
-		while (cr != this->rules.end())
-			(*cr++)->reset();
-		this->errorPos = start + finalLen;
+		this->errorPos = (*cr)->getErrorPos();
+		while (++cr != this->rules.end())
+			(*cr)->reset();
 		return (BNF_PARSE_ERROR);
 	}
 	this->errorPos = BNF_ERROR_POS_NONE;
 	return (finalLen);
+}
+
+BNFAlts     BNFCat::operator|(BNFParser const &other)
+{
+        return (BNFAlts('(' + this->name + ")|(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFCat      BNFCat::operator&(BNFParser const &other)
+{
+	BNFCat	res(*this);
+
+	res.name += '&' + other.getName();
+	res.rules.push_back(other.clone());
+	return (res);
+}
+
+BNFRep      BNFCat::operator+(size_t max)
+{
+        std::string     maxStr;
+
+        kdo::convert(maxStr, max);
+        return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
+}
+
+BNFRep		BNFCat::operator-(size_t min)
+{
+        std::string     minStr;
+
+        kdo::convert(minStr, min);
+        return (BNFRep('(' + this->name + ")-" + minStr, *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFCat::operator[](std::string const &name) const
@@ -105,7 +127,7 @@ BNFFind		*BNFCat::operator[](std::string const &name) const
 	return (finalRes);
 }
 
-BNFCat	&BNFCat::operator=(BNFCat const &other)
+BNFCat		&BNFCat::operator=(BNFCat const &other)
 {
 	std::vector<BNFParser *>::const_iterator	cr;
 

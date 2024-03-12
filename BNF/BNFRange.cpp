@@ -6,13 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 16:55:23 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:06:58 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BNFRange.hpp"
 
-BNFRange::BNFRange(char cMin, char cMax, std::string const &name):	BNFParser(name),
+BNFRange::BNFRange(std::string const &name, char cMin, char cMax):	BNFParser(name),
 																	cMin(cMin),
 																	cMax(cMax)	
 {
@@ -42,7 +42,7 @@ BNFParser	*BNFRange::clone(void) const
 ssize_t		BNFRange::parse(std::string const &str, size_t start)
 {
 	this->value.clear();
-	if (str[start] < this->cMin || this->cMax < str[start])
+	if (str.length() < start || str[start] < this->cMin || this->cMax < str[start])
 	{
 		this->errorPos = start;
 		return (BNF_PARSE_ERROR);
@@ -50,6 +50,32 @@ ssize_t		BNFRange::parse(std::string const &str, size_t start)
 	this->value = str.substr(start, 1);
 	this->errorPos = BNF_ERROR_POS_NONE;
 	return (1);
+}
+
+BNFAlts		BNFRange::operator|(BNFParser const &other)
+{
+        return (BNFAlts(this->name + "|(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFCat      BNFRange::operator&(BNFParser const &other)
+{
+        return (BNFCat(this->name + "&(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFRep      BNFRange::operator+(size_t max)
+{
+        std::string     maxStr;
+
+        kdo::convert(maxStr, max);
+        return (BNFRep(this->name + '+' + maxStr, *this, 0, max));
+}
+
+BNFRep      BNFRange::operator-(size_t min)
+{
+        std::string     minStr;
+
+        kdo::convert(minStr, min);
+        return (BNFRep(this->name + '-' + minStr, *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFRange::operator[](std::string const &name) const

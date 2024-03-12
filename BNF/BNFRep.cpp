@@ -6,13 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 16:57:04 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:52:59 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BNFRep.hpp"
 
-BNFRep::BNFRep(BNFParser const &rule, size_t min, size_t max, std::string const &name):	BNFParser(name),
+BNFRep::BNFRep(std::string const &name, BNFParser const &rule, size_t min, size_t max):	BNFParser(name),
 																						rule(rule.clone()),
 																						min(min),
 																						max(max)
@@ -24,6 +24,12 @@ BNFRep::BNFRep(BNFRep const &other):	BNFParser(other),
 										min(other.min),
 										max(other.max)
 {
+}
+
+
+BNFRep::~BNFRep(void)
+{
+	delete this->rule;
 }
 
 void		BNFRep::reset(void)
@@ -45,12 +51,12 @@ ssize_t		BNFRep::parse(std::string const &str, size_t start)
 	ssize_t	len;
 
 	this->value.clear();
-	for (cr = 0; cr < this->max && start + finalLen < str.length(); cr++)
+	for (cr = 0; cr < this->max; cr++)
 	{
 		len = this->rule->parse(str, start + finalLen);
+		this->value += this->rule->getValue();
 		if (len == BNF_PARSE_ERROR)
 			break;
-		this->value += this->rule->getValue();
 		finalLen += len;	
 	}
 	if (cr < this->min)
@@ -62,11 +68,42 @@ ssize_t		BNFRep::parse(std::string const &str, size_t start)
 	return (finalLen);
 }
 
+BNFAlts		BNFRep::operator|(BNFParser const &other)
+{
+        return (BNFAlts('(' + this->name + ")|(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFCat		BNFRep::operator&(BNFParser const &other)
+{
+        return (BNFCat('(' + this->name + ")&(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFRep		BNFRep::operator+(size_t max)
+{
+		BNFRep		res(*this);
+		std::string maxStr;
+
+        kdo::convert(maxStr, max);
+		res.name += '+' + maxStr;
+		res.max = max;
+		return (res);
+}
+
+BNFRep		BNFRep::operator-(size_t min)
+{
+		BNFRep		res(*this);
+		std::string minStr;
+
+        kdo::convert(minStr, min);
+		res.name += '-' + minStr;
+		res.min = min;
+		return (res);
+}
+
 BNFFind		*BNFRep::operator[](std::string const &name) const
 {
-	std::vector<BNFParser *>::const_iterator	cr;
-	BNFFind										*finalRes(new BNFFind());
-	BNFFind										*res;
+	BNFFind	*finalRes(new BNFFind());
+	BNFFind	*res;
 
 	res = (*this->rule)[name];
 	finalRes->merge(*res);
@@ -75,11 +112,6 @@ BNFFind		*BNFRep::operator[](std::string const &name) const
 	if (this->name == name)
 		finalRes->pushBack(BNFInher(*this));
 	return (finalRes);
-}
-
-BNFRep::~BNFRep(void)
-{
-	delete this->rule;
 }
 
 BNFRep	&BNFRep::operator=(BNFRep const &other)

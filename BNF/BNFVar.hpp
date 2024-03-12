@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BNFRange.hpp                                       :+:      :+:    :+:   */
+/*   BNFVar.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 22:15:15 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/12 22:39:22 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,16 @@
 #include "BNFRep.hpp"
 #include "BNFParser.hpp"
 
-class BNFRange: public BNFParser
+class BNFVar: public BNFParser
 {
 	protected:
-		char	cMin;
-		char	cMax;
+		BNFParser	*rule;
 
 	public:
-					BNFRange(std::string const &name, char cMIn, char cMax);
-					BNFRange(BNFRange const &other);
-					~BNFRange(void);
+					BNFVar(std::string const &name);
+					BNFVar(std::string const &name, BNFParser const &rule);
+					BNFVar(BNFVar const &other);
+					~BNFVar(void);
 		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
@@ -35,5 +35,6 @@ class BNFRange: public BNFParser
         BNFRep      operator+(size_t max);
         BNFRep      operator-(size_t min);
 		BNFFind		*operator[](std::string const &name) const;
-		BNFRange	&operator=(BNFRange const &other);
+		BNFVar		&operator=(BNFVar const &other);
+		BNFVar		&operator=(BNFParser const &other);
 };

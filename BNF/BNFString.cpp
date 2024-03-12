@@ -6,13 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 16:56:04 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:07:56 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BNFString.hpp"
 
-BNFString::BNFString(std::string const &str, std::string const &name):	BNFParser(name),
+BNFString::BNFString(std::string const &name, std::string const &str):	BNFParser(name),
 																		str(str)
 {
 }
@@ -40,7 +40,8 @@ BNFParser	*BNFString::clone(void) const
 ssize_t		BNFString::parse(std::string const &str, size_t start)
 {
 	this->value.clear();
-	if (str.compare(start, this->str.length(), this->str))
+	if (str.length() < start + this->str.length()
+		|| str.compare(start, this->str.length(), this->str))
 	{
 		this->errorPos = start;
 		return (BNF_PARSE_ERROR);
@@ -48,6 +49,32 @@ ssize_t		BNFString::parse(std::string const &str, size_t start)
 	this->value = str.substr(start, this->str.length());
 	this->errorPos = BNF_ERROR_POS_NONE;
 	return (this->str.length());
+}
+
+BNFAlts		BNFString::operator|(BNFParser const &other)
+{
+        return (BNFAlts(this->name + "|(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFCat		BNFString::operator&(BNFParser const &other)
+{
+        return (BNFCat(this->name + "&(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFRep		BNFString::operator+(size_t max)
+{
+        std::string     maxStr;
+
+        kdo::convert(maxStr, max);
+        return (BNFRep(this->name + '+' + maxStr, *this, 0, max));
+}
+
+BNFRep		BNFString::operator-(size_t min)
+{
+        std::string     minStr;
+
+        kdo::convert(minStr, min);
+        return (BNFRep(this->name + '-' + minStr, *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFString::operator[](std::string const &name) const

@@ -6,13 +6,14 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/09 17:40:43 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/12 18:27:21 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <vector>
+#include "BNF/BNF.hpp"
 #include "kdolib/kdolib.hpp"
 
 #define PARSE_ERROR -1
@@ -34,46 +35,6 @@ class IrcMessage
 		std::string					command;
 		std::vector<std::string>	params;	
 		IrcMessageError				error;
-
-		ssize_t						parsePrefix(std::stringstream &sMsg);
-		ssize_t						parseCommand(std::stringstream &sMsg);
-		ssize_t						parseParams(std::stringstream &sMsg);
-
-		static ssize_t				parseNospcrlfcl(std::stringstream sMsg);
-		static ssize_t				parseMiddle(std::stringstream sMsg);
-		static ssize_t				parseTrailing(std::stringstream sMsg);
-
-		static ssize_t				parseSpace(std::stringstream sMsg);
-		static ssize_t				parseCrlf(std::stringstream sMsg);
-
-		static ssize_t				parseTarget(std::stringstream sMsg);
-		static ssize_t				parseMsgtarget(std::stringstream sMsg);
-		static ssize_t				parseMsgto(std::stringstream sMsg);
-		static ssize_t				parseChannel(std::stringstream sMsg);
-
-		static ssize_t				parseServername(std::stringstream sMsg);
-		static ssize_t				parseHost(std::stringstream sMsg);
-		static ssize_t				parseHostname(std::stringstream sMsg);
-		static ssize_t				parseShortname(std::stringstream sMsg);
-
-		static ssize_t				parseHostaddr(std::stringstream sMsg);
-		static ssize_t				parseIp4addr(std::stringstream sMsg);
-		static ssize_t				parseIp6addr(std::stringstream sMsg);
-		static ssize_t				parseNickname(std::stringstream sMsg);
-		static ssize_t				parseTargetmask(std::stringstream sMsg);
-
-		static ssize_t				parseChangstring(std::stringstream sMsg);
-		static ssize_t				parseChannelid(std::stringstream sMsg);
-		static ssize_t				parseUser(std::stringstream sMsg);
-
-		static ssize_t				parseKey(std::stringstream sMsg);
-		static ssize_t				parseLetter(std::stringstream sMsg);
-		static ssize_t				parseDigit(std::stringstream sMsg);
-		static ssize_t				parseHexdigit(std::stringstream sMsg);
-		static ssize_t				parseSpecial(std::stringstream sMsg);
-
-		static ssize_t				parseOR(std::stringstream sMsg, t_uint count, ...);
-		static ssize_t				parseAND(std::stringstream sMsg, t_uint count, ...);
 
 	public:
 										IrcMessage(void);

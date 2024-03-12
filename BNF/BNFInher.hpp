@@ -6,16 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 17:54:30 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/12 19:29:49 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <vector>
-#include <stdarg.h>
 #include "BNFParser.hpp"
-#include "../kdolib/kdolib.hpp"
 
 class BNFParser;
 
