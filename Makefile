@@ -11,7 +11,19 @@ LDLIBS		=
 KDO			= kdolib
 KDOLIB		= $(KDO)/kdolib.a
 
-SRC 		= IrcServer.cpp\
+SRC 		= BNF/BNFAlts.cpp\
+			  BNF/BNFCat.cpp\
+			  BNF/BNFChar.cpp\
+			  BNF/BNFFind.cpp\
+			  BNF/BNFInher.cpp\
+			  BNF/BNFParser.cpp\
+			  BNF/BNFRange.cpp\
+			  BNF/BNFRep.cpp\
+			  BNF/BNFString.cpp\
+			  IrcMessage.cpp\
+			  IrcServer.cpp\
+			  main.cpp\
+			  Mitm.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
 			  SocketTcpServer.cpp
