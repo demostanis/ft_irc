@@ -26,7 +26,8 @@ SRC 		= BNF/BNFAlts.cpp\
 			  Mitm.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
-			  SocketTcpServer.cpp
+			  SocketTcpServer.cpp\
+			  Config.cpp
 
 SRC_MITM	= Mitm.cpp\
 			  Socket.cpp\
