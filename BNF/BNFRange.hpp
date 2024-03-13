@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 22:15:15 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:43:22 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include "BNFAlts.hpp"
 #include "BNFCat.hpp"
 #include "BNFRep.hpp"
+#include "BNFString.hpp"
+#include "BNFChar.hpp"
 #include "BNFParser.hpp"
 
 class BNFRange: public BNFParser
@@ -31,7 +33,11 @@ class BNFRange: public BNFParser
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
 		BNFAlts     operator|(BNFParser const &other);
+		BNFAlts     operator|(std::string const &str);
+		BNFAlts     operator|(char c);
         BNFCat      operator&(BNFParser const &other);
+		BNFCat      operator&(std::string const &str);
+		BNFCat      operator&(char c);
         BNFRep      operator+(size_t max);
         BNFRep      operator-(size_t min);
 		BNFFind		*operator[](std::string const &name) const;

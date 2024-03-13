@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 00:51:31 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:50:33 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,20 @@ BNFAlts     BNFCat::operator|(BNFParser const &other)
         return (BNFAlts('(' + this->name + ")|(" + other.getName() + ')', 2, this, &other));
 }
 
+BNFAlts      BNFCat::operator|(std::string const &str)
+{
+    BNFString   tmp(str, str);
+
+    return (BNFAlts('(' + this->name + ")|" + str, 2, this, &tmp));
+}
+
+BNFAlts      BNFCat::operator|(char c)
+{
+    BNFChar   tmp((char[2]){c, '\0'}, c);
+
+    return (BNFAlts('(' + this->name + ")|" + c, 2, this, &tmp));
+}
+
 BNFCat      BNFCat::operator&(BNFParser const &other)
 {
 	BNFCat	res(*this);
@@ -93,20 +107,40 @@ BNFCat      BNFCat::operator&(BNFParser const &other)
 	return (res);
 }
 
+BNFCat      BNFCat::operator&(std::string const &str)
+{
+	BNFCat		res(*this);
+    BNFString	*tmp(new BNFString(str, str));
+
+	res.name += '&' + tmp->getName();
+	res.rules.push_back(tmp);
+	return (res);
+}
+
+BNFCat      BNFCat::operator&(char c)
+{
+	BNFCat	res(*this);
+    BNFChar	*tmp(new BNFChar((char[2]){c, '\0'}, c));
+
+	res.name += '&' + tmp->getName();
+	res.rules.push_back(tmp);
+	return (res);
+}
+
 BNFRep      BNFCat::operator+(size_t max)
 {
-        std::string     maxStr;
-
-        kdo::convert(maxStr, max);
-        return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
+	std::string     maxStr;
+	
+	kdo::convert(maxStr, max);
+	return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
 }
 
 BNFRep		BNFCat::operator-(size_t min)
 {
-        std::string     minStr;
-
-        kdo::convert(minStr, min);
-        return (BNFRep('(' + this->name + ")-" + minStr, *this, min, BNF_INFINI));
+	std::string     minStr;
+	
+	kdo::convert(minStr, min);
+	return (BNFRep('(' + this->name + ")-" + minStr, *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFCat::operator[](std::string const &name) const

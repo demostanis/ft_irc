@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 00:09:54 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 02:47:28 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,13 @@ void	findDigit(BNFParser &ip6)
 	BNFFind::iterator	cr;
 	BNFFind				*find;
 
-	find = ip6["ip4"];
+	find = ip6["cl"];
 	std::cout << find->size() << std::endl;
 	for (cr = find->begin(); cr != find->end(); cr++)
-		std::cout << "digit value: " << (*cr)->getValue() << std::endl;
+	{
+		if ((*cr)->isHeir(1, "test"))
+			std::cout << "digit value: " << (*cr)->getValue() << std::endl;
+	}
 	delete find;
 }
 

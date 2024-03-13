@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 00:52:59 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:58:33 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,38 @@ BNFAlts		BNFRep::operator|(BNFParser const &other)
         return (BNFAlts('(' + this->name + ")|(" + other.getName() + ')', 2, this, &other));
 }
 
+
+BNFAlts      BNFRep::operator|(std::string const &str)
+{
+    BNFString   tmp(str, str);
+
+    return (BNFAlts('(' + this->name + ")|" + str, 2, this, &tmp));
+}
+
+BNFAlts      BNFRep::operator|(char c)
+{
+    BNFChar   tmp((char[2]){c, '\0'}, c);
+
+    return (BNFAlts('(' + this->name + ")|" + c, 2, this, &tmp));
+}
+
 BNFCat		BNFRep::operator&(BNFParser const &other)
 {
         return (BNFCat('(' + this->name + ")&(" + other.getName() + ')', 2, this, &other));
+}
+
+BNFCat      BNFRep::operator&(std::string const &str)
+{
+    BNFString   tmp(str, str);
+
+    return (BNFCat('(' + this->name + ")&" + str, 2, this, &tmp));
+}
+
+BNFCat      BNFRep::operator&(char c)
+{
+    BNFChar   tmp((char[2]){c, '\0'}, c);
+
+    return (BNFCat('(' + this->name + ")&" + c, 2, this, &tmp));
 }
 
 BNFRep		BNFRep::operator+(size_t max)
