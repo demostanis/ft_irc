@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:07:05 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:55:49 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ class BNFRep: public BNFParser
 
 	public:
 					BNFRep(std::string const &name, BNFParser const &rule, size_t min, size_t max);
+					BNFRep(BNFParser const &rule, size_t min, size_t max);
 					BNFRep(BNFRep const &other);
 					~BNFRep(void);
+		std::string getFormatName(void) const;
 		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);

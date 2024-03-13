@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:08:26 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:46:52 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,23 @@ BNFCat::BNFCat(std::string const &name, t_uint count, ...): BNFParser(name)
 	va_start(argList, count);
 	while (count--)
 		this->rules.push_back(va_arg(argList, BNFParser *)->clone());
+	va_end(argList);
+}
+
+BNFCat::BNFCat(t_uint count, ...): BNFParser("")
+{
+	va_list		argList;
+	BNFParser	*cr;
+
+	va_start(argList, count);
+	while (count--)
+	{
+		cr = va_arg(argList, BNFParser *)->clone();
+		this->rules.push_back(cr);
+		this->name += cr->getFormatName();
+		if (count)
+			this->name += '&';
+	}
 	va_end(argList);
 }
 
@@ -38,6 +55,11 @@ BNFCat::~BNFCat(void)
 		delete *cr;
 }
 
+std::string BNFCat::getFormatName(void) const
+{
+    return ('(' + this->name + ')');
+}
+
 void		BNFCat::reset(void)
 {
 	std::vector<BNFParser *>::iterator	cr;
@@ -55,9 +77,9 @@ BNFParser	*BNFCat::clone(void) const
 
 ssize_t		BNFCat::parse(std::string const &str, size_t start)
 {
+	ssize_t								finalLen(0);
+	ssize_t								len;
 	std::vector<BNFParser *>::iterator	cr;
-	ssize_t	finalLen(0);
-	ssize_t	len;
 
 	this->value.clear();
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
@@ -81,73 +103,67 @@ ssize_t		BNFCat::parse(std::string const &str, size_t start)
 
 BNFAlts     BNFCat::operator|(BNFParser const &other) const
 {
-        return (BNFAlts('(' + this->name + ")|(" + other.getName() + ')', 2, this, &other));
+	return (BNFAlts(this->getFormatName() + '|' + other.getFormatName(), 2, this, &other));
 }
 
 BNFAlts      BNFCat::operator|(std::string const &str) const
 {
-    BNFString   tmp(str, str);
+    BNFString   tmp(str);
 
-    return (BNFAlts('(' + this->name + ")|" + str, 2, this, &tmp));
+    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFAlts      BNFCat::operator|(char c) const
 {
-    BNFChar   tmp((char[2]){c, '\0'}, c);
+    BNFChar   tmp(c);
 
-    return (BNFAlts('(' + this->name + ")|" + c, 2, this, &tmp));
+    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFCat      BNFCat::operator&(BNFParser const &other) const
 {
 	BNFCat	res(*this);
 
-	res.name += '&' + other.getName();
+	res.name += '&' + other.getFormatName();
 	res.rules.push_back(other.clone());
 	return (res);
 }
 
 BNFCat      BNFCat::operator&(std::string const &str) const
 {
+    BNFString	*tmp(new BNFString(str));
 	BNFCat		res(*this);
-    BNFString	*tmp(new BNFString(str, str));
 
-	res.name += '&' + tmp->getName();
+	res.name += '&' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
 
 BNFCat      BNFCat::operator&(char c) const
 {
+    BNFChar	*tmp(new BNFChar(c));
 	BNFCat	res(*this);
-    BNFChar	*tmp(new BNFChar((char[2]){c, '\0'}, c));
 
-	res.name += '&' + tmp->getName();
+	res.name += '&' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
 
 BNFRep      BNFCat::operator+(size_t max) const
 {
-	std::string     maxStr;
-	
-	kdo::convert(maxStr, max);
-	return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
+	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
 }
 
 BNFRep		BNFCat::operator-(size_t min) const
 {
-	std::string     minStr;
-	
-	kdo::convert(minStr, min);
-	return (BNFRep('(' + this->name + ")-" + minStr, *this, min, BNF_INFINI));
+	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFCat::operator[](std::string const &name) const
 {
-	std::vector<BNFParser *>::const_iterator	cr;
 	BNFFind										*finalRes(new BNFFind());
 	BNFFind										*res;
+	std::vector<BNFParser *>::const_iterator	cr;
 
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
 	{

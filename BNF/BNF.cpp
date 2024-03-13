@@ -6,7 +6,7 @@
 /*   By: nlaerema <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 03:13:58 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:25:07 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:22:35 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,29 @@
 
 BNFAlts	operator|(std::string const &str, BNFParser const &parser)
 {
-	BNFString	tmp(str, str);
+	BNFString	tmp(str);
 
-	return (BNFAlts(str + "|(" + parser.getName() + ')', 2, &tmp, &parser));
+	return (BNFAlts(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
 }
 
 BNFAlts	operator|(char c, BNFParser const &parser)
 {
-	BNFChar	tmp((char[2]){c, '\0'}, c);
+	BNFChar	tmp(c);
 
-	return (BNFAlts(tmp.getName() + "|(" + parser.getName() + ')', 2, &tmp, &parser));
+	return (BNFAlts(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
 }
 
 BNFCat	operator&(std::string const &str, BNFParser const &parser)
 {
-	BNFString	tmp(str, str);
+	BNFString	tmp(str);
 
-	return (BNFCat(str + "|(" + parser.getName() + ')', 2, &tmp, &parser));
+	return (BNFCat(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
 }
 
 BNFCat	operator&(char c, BNFParser const &parser)
 {
 
-	BNFChar	tmp((char[2]){c, '\0'}, c);
+	BNFChar	tmp(c);
 
-	return (BNFCat(tmp.getName() + "|(" + parser.getName() + ')', 2, &tmp, &parser));
+	return (BNFCat(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
 }

@@ -6,17 +6,41 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 18:06:20 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 13:56:28 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcMessage.hpp"
 
-IrcMessage::IrcMessage(void): error(IRC_MESSAGE_NO_ERROR)
+BNFVar	getInitalParser(void)
+{
+	BNFChar		SPACE("SPACE", ' ');
+	BNFChar		cl("cl", ':');
+	BNFChar		pt("pt", '.');
+	BNFChar		excl("excl", '!');
+	BNFChar		hash("hash", '#');
+	BNFChar		plus("plus", '+');
+	BNFChar		percnt("percnt", '%');
+	BNFChar		at("at", '@');
+	BNFChar		comma("comma", ',');
+	BNFChar		et("and", '&');
+	BNFString	crlf("crlf", "\r\n");
+	BNFRange	digit("digit", '0', '9');
+	BNFRange	minusLetter("minusLetter", 'a', 'z');
+	BNFRange	upperLetter("upperLetter", 'A', 'Z');
+	BNFAlts		letter("letter", 2, &minusLetter, &upperLetter);
+	BNFAlts		hexdigit("hexdigit", digit | 
+}
+
+BNFVar const	IrcMessage::initialParser("message", getInitalParser());
+
+IrcMessage::IrcMessage(void):	parser("message", IrcMessage::initialParser),	
+								error(IRC_MESSAGE_NO_ERROR)
 {
 }
 
-IrcMessage::IrcMessage(IrcMessage const &other):	prefix(other.prefix),
+IrcMessage::IrcMessage(IrcMessage const &other):	parser("message", other.parser),
+													prefix(other.prefix),
 													command(other.command),
 													params(other.params),
 													error(other.error)
@@ -27,23 +51,14 @@ IrcMessage::~IrcMessage(void)
 {
 }
 
-IrcMessage::IrcMessage(std::string const &msg): error(IRC_MESSAGE_NO_ERROR)
+IrcMessage::IrcMessage(std::string const &msg):	parser("message", IrcMessage::initialParser),
+												error(IRC_MESSAGE_NO_ERROR)
 {
 	this->parse(msg);
 }
 
 IrcMessageError					IrcMessage::parse(std::string const &msg)
 {
-	std::stringstream	sMsg(msg);
-	
-	this->error = IRC_MESSAGE_NO_ERROR;
-	if (this->parsePrefix(sMsg) == PARSE_ERROR)
-		this->error |= IRC_PREFIX_ERROR;
-	if (this->parseCommand(sMsg) == PARSE_ERROR)
-		this->error |= IRC_COMMAND_ERROR;
-	if (this->parseParams(sMsg) == PARSE_ERROR)
-		this->error |= IRC_PREFIX_ERROR;
-	return (this->error);
 }
 
 IrcMessageError					IrcMessage::getError(void) const

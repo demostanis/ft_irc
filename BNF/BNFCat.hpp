@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:08:14 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:00:29 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@ class BNFCat: public BNFParser
 
 	public:
 					BNFCat(std::string const &name, t_uint count, ...);
+					BNFCat(t_uint count, ...);
 					BNFCat(BNFCat const &other);
 					~BNFCat(void);
+		std::string getFormatName(void) const;
 		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);

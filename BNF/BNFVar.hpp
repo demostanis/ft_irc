@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:46:51 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:12:31 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class BNFVar: public BNFParser
 					BNFVar(std::string const &name, BNFParser const &rule);
 					BNFVar(BNFVar const &other);
 					~BNFVar(void);
+		std::string getFormatName(void) const;
 		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:06:20 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:20:17 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@ BNFRange::BNFRange(std::string const &name, char cMin, char cMax):	BNFParser(nam
 {
 }
 
+BNFRange::BNFRange(char cMin, char cMax):	BNFParser((char[6]){'<', cMin, '-', cMax, '>'}),
+											cMin(cMin),
+											cMax(cMax)	
+{
+}
+
 BNFRange::BNFRange(BNFRange const &other):	BNFParser(other),
 											cMin(other.cMin),
 											cMax(other.cMax)
@@ -26,6 +32,11 @@ BNFRange::BNFRange(BNFRange const &other):	BNFParser(other),
 
 BNFRange::~BNFRange(void)
 {
+}
+
+std::string BNFRange::getFormatName(void) const
+{
+	return (this->name);
 }
 
 void		BNFRange::reset(void)
@@ -54,56 +65,50 @@ ssize_t		BNFRange::parse(std::string const &str, size_t start)
 
 BNFAlts		BNFRange::operator|(BNFParser const &other) const
 {
-	return (BNFAlts(this->name + "|(" + other.getName() + ')', 2, this, &other));
+	return (BNFAlts(this->getFormatName() + '|' + other.getFormatName(), 2, this, &other));
 }
 
 BNFAlts      BNFRange::operator|(std::string const &str) const
 {
-    BNFString   tmp(str, str);
+    BNFString   tmp(str);
 
-    return (BNFAlts(this->name + '|' + str, 2, this, &tmp));
+    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFAlts      BNFRange::operator|(char c) const
 {
-    BNFChar   tmp((char[2]){c, '\0'}, c);
+    BNFChar   tmp(c);
 
-    return (BNFAlts(this->name + '|' + c, 2, this, &tmp));
+    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFCat      BNFRange::operator&(BNFParser const &other) const
 {
-	return (BNFCat(this->name + "&(" + other.getName() + ')', 2, this, &other));
+	return (BNFCat(this->getFormatName() + '&' + other.getFormatName(), 2, this, &other));
 }
 
 BNFCat      BNFRange::operator&(std::string const &str) const
 {
-    BNFString   tmp(str, str);
+    BNFString   tmp(str);
 
-    return (BNFCat(this->name + '&' + str, 2, this, &tmp));
+    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFCat      BNFRange::operator&(char c) const
 {
-    BNFChar   tmp((char[2]){c, '\0'}, c);
+    BNFChar   tmp(c);
 
-    return (BNFCat(this->name + '&' + c, 2, this, &tmp));
+    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFRep      BNFRange::operator+(size_t max) const
 {
-	std::string     maxStr;
-
-	kdo::convert(maxStr, max);
-	return (BNFRep(this->name + '+' + maxStr, *this, 0, max));
+	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
 }
 
 BNFRep      BNFRange::operator-(size_t min) const
 {
-	std::string     minStr;
-
-	kdo::convert(minStr, min);
-	return (BNFRep(this->name + '-' + minStr, *this, min, BNF_INFINI));
+	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFRange::operator[](std::string const &name) const

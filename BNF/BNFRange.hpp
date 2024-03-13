@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:05:49 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:48:07 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,10 @@ class BNFRange: public BNFParser
 
 	public:
 					BNFRange(std::string const &name, char cMIn, char cMax);
+					BNFRange(char cMin, char cMax);
 					BNFRange(BNFRange const &other);
 					~BNFRange(void);
+		std::string getFormatName(void) const;
 		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);

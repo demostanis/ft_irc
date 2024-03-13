@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:08:58 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:38:42 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,23 @@ BNFAlts::BNFAlts(std::string const &name, t_uint count, ...): BNFParser(name)
 	va_start(argList, count);
 	while (count--)
 		this->rules.push_back(va_arg(argList, BNFParser *)->clone());
+	va_end(argList);
+}
+
+BNFAlts::BNFAlts(t_uint count, ...): BNFParser("")
+{
+	va_list		argList;
+	BNFParser	*cr;
+
+	va_start(argList, count);
+	while (count--)
+	{
+		cr = va_arg(argList, BNFParser *)->clone();
+		this->rules.push_back(cr);
+		this->name += cr->getFormatName();
+		if (count)
+			this->name += '|';
+	}
 	va_end(argList);
 }
 
@@ -36,6 +53,11 @@ BNFAlts::~BNFAlts(void)
 
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
 		delete *cr;
+}
+
+std::string BNFAlts::getFormatName(void) const
+{
+    return ('(' + this->name + ')');
 }
 
 void		BNFAlts::reset(void)
@@ -82,71 +104,65 @@ BNFAlts     BNFAlts::operator|(BNFParser const &other) const
 {
 	BNFAlts	res(*this);
 
-	res.name += '|' + other.getName();
+	res.name += '|' + other.getFormatName();
 	res.rules.push_back(other.clone());
 	return (res);
 }
 
 BNFAlts      BNFAlts::operator|(std::string const &str) const
 {
-    BNFString   *tmp(new BNFString(str, str));
+    BNFString   *tmp(new BNFString(str));
 	BNFAlts		res(*this);
 
-	res.name += '|' + tmp->getName();
+	res.name += '|' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
 
 BNFAlts      BNFAlts::operator|(char c) const
 {
-    BNFChar	*tmp(new BNFChar((char[2]){c, '\0'}, c));
+    BNFChar	*tmp(new BNFChar(c));
 	BNFAlts	res(*this);
 
-	res.name += '|' + tmp->getName();
+	res.name += '|' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
 
 BNFCat		BNFAlts::operator&(BNFParser const &other) const
 {
-	return (BNFCat('(' + this->name + ")&(" + other.getName() + ')', 2, this, &other));
+	return (BNFCat(this->getFormatName() + '&' + other.getFormatName(), 2, this, &other));
 }
 
 BNFCat      BNFAlts::operator&(std::string const &str) const
 {
-    BNFString   tmp(str, str);
+    BNFString   tmp(str);
 
-    return (BNFCat('(' + this->name + ")&" + str, 2, this, &tmp));
+    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFCat      BNFAlts::operator&(char c) const
 {
-    BNFChar   tmp((char[2]){c, '\0'}, c);
+    BNFChar   tmp(c);
 
-    return (BNFCat('(' + this->name + ")&" + c, 2, this, &tmp));
+    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
 }
 
 BNFRep      BNFAlts::operator+(size_t max) const
 {
-	std::string     maxStr;
-
-	kdo::convert(maxStr, max);
-	return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
+	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
 }
 
 BNFRep      BNFAlts::operator-(size_t min) const
 {
-	std::string     minStr;
-	
-	kdo::convert(minStr, min);
-	return (BNFRep('(' + this->name + ")-" + minStr, *this, min, BNF_INFINI));
+	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
 BNFFind		*BNFAlts::operator[](std::string const &name) const
 {
-	std::vector<BNFParser *>::const_iterator	cr;
 	BNFFind										*finalRes(new BNFFind());
 	BNFFind										*res;
+	std::vector<BNFParser *>::const_iterator	cr;
 
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
 	{

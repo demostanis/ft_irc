@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/12 18:27:21 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 13:24:00 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ typedef uint8_t	IrcMessageError;
 class IrcMessage
 {
 	private:
+		static BNFVar const			initialParser;
+		BNFVar						parser;
 		std::string					prefix;
 		std::string					command;
 		std::vector<std::string>	params;	
