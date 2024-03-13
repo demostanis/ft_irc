@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 01:59:18 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 03:08:58 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ ssize_t		BNFAlts::parse(std::string const &str, size_t start)
 	return (finalLen);
 }
 
-BNFAlts     BNFAlts::operator|(BNFParser const &other)
+BNFAlts     BNFAlts::operator|(BNFParser const &other) const
 {
 	BNFAlts	res(*this);
 
@@ -87,7 +87,7 @@ BNFAlts     BNFAlts::operator|(BNFParser const &other)
 	return (res);
 }
 
-BNFAlts      BNFAlts::operator|(std::string const &str)
+BNFAlts      BNFAlts::operator|(std::string const &str) const
 {
     BNFString   *tmp(new BNFString(str, str));
 	BNFAlts		res(*this);
@@ -97,7 +97,7 @@ BNFAlts      BNFAlts::operator|(std::string const &str)
 	return (res);
 }
 
-BNFAlts      BNFAlts::operator|(char c)
+BNFAlts      BNFAlts::operator|(char c) const
 {
     BNFChar	*tmp(new BNFChar((char[2]){c, '\0'}, c));
 	BNFAlts	res(*this);
@@ -107,26 +107,26 @@ BNFAlts      BNFAlts::operator|(char c)
 	return (res);
 }
 
-BNFCat		BNFAlts::operator&(BNFParser const &other)
+BNFCat		BNFAlts::operator&(BNFParser const &other) const
 {
 	return (BNFCat('(' + this->name + ")&(" + other.getName() + ')', 2, this, &other));
 }
 
-BNFCat      BNFAlts::operator&(std::string const &str)
+BNFCat      BNFAlts::operator&(std::string const &str) const
 {
     BNFString   tmp(str, str);
 
     return (BNFCat('(' + this->name + ")&" + str, 2, this, &tmp));
 }
 
-BNFCat      BNFAlts::operator&(char c)
+BNFCat      BNFAlts::operator&(char c) const
 {
     BNFChar   tmp((char[2]){c, '\0'}, c);
 
     return (BNFCat('(' + this->name + ")&" + c, 2, this, &tmp));
 }
 
-BNFRep      BNFAlts::operator+(size_t max)
+BNFRep      BNFAlts::operator+(size_t max) const
 {
 	std::string     maxStr;
 
@@ -134,7 +134,7 @@ BNFRep      BNFAlts::operator+(size_t max)
 	return (BNFRep('(' + this->name + ")+" + maxStr, *this, 0, max));
 }
 
-BNFRep      BNFAlts::operator-(size_t min)
+BNFRep      BNFAlts::operator-(size_t min) const
 {
 	std::string     minStr;
 	

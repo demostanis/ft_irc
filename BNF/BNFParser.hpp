@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 01:36:15 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 03:47:23 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,14 @@ class BNFParser
 		virtual void		reset(void) = 0;
 		virtual BNFParser	*clone(void) const = 0;
 		virtual ssize_t		parse(std::string const &str, size_t start = 0) = 0;
-		virtual BNFAlts		operator|(BNFParser const &other) = 0;
-		virtual BNFAlts		operator|(std::string const &str) = 0;
-		virtual BNFAlts		operator|(char c) = 0;
-		virtual BNFCat		operator&(BNFParser const &other) = 0;
-		virtual BNFCat		operator&(std::string const &str) = 0;
-		virtual BNFCat      operator&(char c) = 0;
-		virtual BNFRep		operator+(size_t max) = 0;
-		virtual BNFRep		operator-(size_t min) = 0;
+		virtual BNFAlts		operator|(BNFParser const &other) const = 0;
+		virtual BNFAlts		operator|(std::string const &str) const = 0;
+		virtual BNFAlts		operator|(char c) const = 0;
+		virtual BNFCat		operator&(BNFParser const &other) const = 0;
+		virtual BNFCat		operator&(std::string const &str) const = 0;
+		virtual BNFCat      operator&(char c) const = 0;
+		virtual BNFRep		operator+(size_t max) const = 0;
+		virtual BNFRep		operator-(size_t min) const = 0;
 		virtual BNFFind		*operator[](std::string const &name) const = 0;
 		BNFParser			&operator=(BNFParser const &other);
 };

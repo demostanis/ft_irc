@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 02:47:28 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 03:49:12 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,8 @@ BNFVar	getParser(void)
 	BNFChar		zero("zero", '0');
 	BNFChar		point("point", '.');
 	BNFChar		cl("cl", ':');
-	BNFString	ffff("ffff", "FFFF");
 	BNFRange	digit("digit", '0', '9');
 	BNFRange	hexletter("hexletter", 'A', 'F');
-	BNFString	ipDualStart("ipDualStart", "0:0:0:0:0:");
 	BNFVar		hexdigit("hexdigit");
 	BNFVar		ip4("ip4");
 	BNFVar		ip6("ip6");
@@ -49,7 +47,7 @@ BNFVar	getParser(void)
 	hexdigit = digit | hexletter;
 	ip4 = digit - 1 + 3 & point & digit - 1 + 3 & point & digit - 1 + 3 & point & digit - 1 + 3;
 	ip6 = (hexdigit - 1 & (cl & hexdigit - 1) - 7 + 7)
-		| (ipDualStart & (zero | ffff) & cl & ip4);
+		| ("0:0:0:0:0:" & (zero | "FFFF") & cl & ip4);
 
 	return (ip6);
 }
@@ -59,12 +57,11 @@ void	findDigit(BNFParser &ip6)
 	BNFFind::iterator	cr;
 	BNFFind				*find;
 
-	find = ip6["cl"];
+	find = ip6["ip4"];
 	std::cout << find->size() << std::endl;
 	for (cr = find->begin(); cr != find->end(); cr++)
 	{
-		if ((*cr)->isHeir(1, "test"))
-			std::cout << "digit value: " << (*cr)->getValue() << std::endl;
+		std::cout << "digit value: " << (*cr)->getValue() << std::endl;
 	}
 	delete find;
 }
