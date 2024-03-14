@@ -14,16 +14,17 @@ KDOLIB		= $(KDO)/kdolib.a
 SRC 		= BNF/BNFAlts.cpp\
 			  BNF/BNFCat.cpp\
 			  BNF/BNFChar.cpp\
+			  BNF/BNF.cpp\
 			  BNF/BNFFind.cpp\
 			  BNF/BNFInher.cpp\
 			  BNF/BNFParser.cpp\
 			  BNF/BNFRange.cpp\
 			  BNF/BNFRep.cpp\
 			  BNF/BNFString.cpp\
+			  BNF/BNFVar.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\
 			  main.cpp\
-			  Mitm.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
 			  SocketTcpServer.cpp\

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 15:41:16 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:42:21 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,19 +107,15 @@ BNFRep		BNFVar::operator-(size_t min) const
 	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
-BNFFind		*BNFVar::operator[](std::string const &name) const
+BNFFind		BNFVar::operator[](std::string const &name) const
 {
-	BNFFind	*finalRes(new BNFFind());
-	BNFFind	*res;
+	BNFFind	res;
 
-	res = (*this->rule)[name];
-	finalRes->merge(*res);
-	delete res;
-	finalRes->pushParent(*this);
+	res.merge((*this->rule)[name]);
+	res.pushParent(*this);
 	if (this->name == name)
-		finalRes->pushBack(BNFInher(*this));
-	return (finalRes);
-
+		res.push_back(BNFInher(*this));
+	return (res);
 }
 
 BNFVar	&BNFVar::operator=(BNFVar const &other)

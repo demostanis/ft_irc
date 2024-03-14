@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 15:26:11 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:37:46 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,12 @@ BNFRep		BNFString::operator-(size_t min) const
 	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
-BNFFind		*BNFString::operator[](std::string const &name) const
+BNFFind		BNFString::operator[](std::string const &name) const
 {
-	BNFFind	*res(new BNFFind());
+	BNFFind	res;
 
 	if (this->name == name)
-		res->pushBack(BNFInher(*this));
+		res.push_back(BNFInher(*this));
 	return (res);
 }
 

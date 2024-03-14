@@ -6,33 +6,29 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 03:45:23 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:35:06 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#include <stdarg.h>
 #include "BNFInher.hpp"
 #include "BNFParser.hpp"
 
 class BNFInher;
 class BNFParser;
 
-class BNFFind: protected std::vector<BNFInher *>
+class BNFFind: public std::vector<BNFInher>
 {
 	public:
 					BNFFind(void);
 					BNFFind(BNFFind const &other);
 					~BNFFind(void);
-		void		clear(void);
-		void		merge(BNFFind &other);
-		void		pushBack(BNFInher const &inher);
+		void		merge(BNFFind const &other);
 		void		pushParent(BNFParser const &parent);
-		using		std::vector<BNFInher *>::empty;
-		using		std::vector<BNFInher *>::size;
-		using		std::vector<BNFInher *>::begin;
-		using		std::vector<BNFInher *>::end;
-		using		std::vector<BNFInher *>::iterator;
-		using		std::vector<BNFInher *>::operator[];
+		BNFFind		isHeir(t_uint count, ...) const;
+		BNFFind		isFail(void) const;
+		BNFFind		isSuccess(void) const;
 		BNFFind		&operator=(BNFFind const &other);
 };

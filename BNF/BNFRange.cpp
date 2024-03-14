@@ -6,21 +6,21 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 15:20:17 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:37:17 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BNFRange.hpp"
 
-BNFRange::BNFRange(std::string const &name, char cMin, char cMax):	BNFParser(name),
-																	cMin(cMin),
-																	cMax(cMax)	
+BNFRange::BNFRange(std::string const &name, t_uchar cMin, t_uchar cMax):	BNFParser(name),
+																			cMin(cMin),
+																			cMax(cMax)	
 {
 }
 
-BNFRange::BNFRange(char cMin, char cMax):	BNFParser((char[6]){'<', cMin, '-', cMax, '>'}),
-											cMin(cMin),
-											cMax(cMax)	
+BNFRange::BNFRange(t_uchar cMin, t_uchar cMax):	BNFParser((char[6]){'<', cMin, '-', cMax, '>'}),
+												cMin(cMin),
+												cMax(cMax)	
 {
 }
 
@@ -111,12 +111,12 @@ BNFRep      BNFRange::operator-(size_t min) const
 	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
-BNFFind		*BNFRange::operator[](std::string const &name) const
+BNFFind		BNFRange::operator[](std::string const &name) const
 {
-	BNFFind	*res(new BNFFind());
+	BNFFind	res;
 
 	if (this->name == name)
-		res->pushBack(BNFInher(*this));
+		res.push_back(BNFInher(*this));
 	return (res);
 }
 

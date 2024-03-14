@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 15:46:52 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:39:56 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ void		BNFCat::reset(void)
 
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
 		(*cr)->reset();
-	this->errorPos = BNF_ERROR_POS_UNINITIALIZED;
 	this->value.clear();
+	this->errorPos = BNF_ERROR_POS_UNINITIALIZED;
 }
 
 BNFParser	*BNFCat::clone(void) const
@@ -159,22 +159,17 @@ BNFRep		BNFCat::operator-(size_t min) const
 	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
 }
 
-BNFFind		*BNFCat::operator[](std::string const &name) const
+BNFFind		BNFCat::operator[](std::string const &name) const
 {
-	BNFFind										*finalRes(new BNFFind());
-	BNFFind										*res;
+	BNFFind										res;
 	std::vector<BNFParser *>::const_iterator	cr;
 
 	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
-	{
-		res = (**cr)[name];
-		finalRes->merge(*res);
-		delete res;
-	}
-	finalRes->pushParent(*this);
+		res.merge((**cr)[name]);
+	res.pushParent(*this);
 	if (this->name == name)
-		finalRes->pushBack(BNFInher(*this));
-	return (finalRes);
+		res.push_back(BNFInher(*this));
+	return (res);
 }
 
 BNFCat		&BNFCat::operator=(BNFCat const &other)

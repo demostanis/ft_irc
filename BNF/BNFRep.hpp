@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 14:55:49 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 00:37:54 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@
 class BNFRep: public BNFParser
 {
 	protected:
-		BNFParser	*rule;
-		size_t		min;
-		size_t		max;
+		std::vector<BNFParser *>	rules;
+		BNFParser					*rule;
+		size_t						min;
+		size_t						max;
 
 	public:
 					BNFRep(std::string const &name, BNFParser const &rule, size_t min, size_t max);
@@ -42,6 +43,6 @@ class BNFRep: public BNFParser
 		BNFCat      operator&(char c) const;
         BNFRep      operator+(size_t max) const;
         BNFRep      operator-(size_t min) const;
-		BNFFind		*operator[](std::string const &name) const;
+		BNFFind		operator[](std::string const &name) const;
 		BNFRep		&operator=(BNFRep const &other);
 };

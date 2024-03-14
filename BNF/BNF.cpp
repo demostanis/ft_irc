@@ -6,7 +6,7 @@
 /*   By: nlaerema <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 03:13:58 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 15:22:35 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/13 21:02:20 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ BNFCat	operator&(std::string const &str, BNFParser const &parser)
 {
 	BNFString	tmp(str);
 
-	return (BNFCat(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
+	return (BNFCat(tmp.getFormatName() + '&' + parser.getFormatName(), 2, &tmp, &parser));
 }
 
 BNFCat	operator&(char c, BNFParser const &parser)
@@ -38,5 +38,5 @@ BNFCat	operator&(char c, BNFParser const &parser)
 
 	BNFChar	tmp(c);
 
-	return (BNFCat(tmp.getFormatName() + '|' + parser.getFormatName(), 2, &tmp, &parser));
+	return (BNFCat(tmp.getFormatName() + '&' + parser.getFormatName(), 2, &tmp, &parser));
 }

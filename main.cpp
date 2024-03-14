@@ -6,11 +6,12 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/12 18:03:58 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 01:29:00 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
+#include "IrcServer.hpp"
 
 bool	parse_config(std::string filename, Config &config)
 {
@@ -39,6 +40,28 @@ bool	parse_config(std::string filename, Config &config)
 	return (succeeded);
 }
 
+void	test(void)
+{
+	BNFFind::const_iterator	cr;
+	IrcMessage				msg;
+	IrcServer				server;
+	
+	if (!server.isConnected())
+		return ;
+	while (1)
+	{
+		if (server.getNextMessage(msg))
+		{
+			std::cout << "getNextMessage Error" << std::endl;
+			return ;
+		}
+		std::cout << "prefix: " << (msg.getPrefix())[0].getValue() << std::endl;
+		std::cout << "command: " << (msg.getCommand())[0].getValue() << std::endl;
+		for (cr = msg.getParams().begin(); cr != msg.getParams().end(); cr++)
+			std::cout << "params: " << (*cr).getValue() << std::endl;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	Config		config;
@@ -54,4 +77,5 @@ int	main(int argc, char **argv)
 		return (1);
 	std::cout << "Welcome to ircserv!" << std::endl;
 	std::cout << "  Admin: " << config.admin << std::endl;
+	test();
 }

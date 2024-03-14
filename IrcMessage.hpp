@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/13 13:24:00 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 01:19:47 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@
 enum EIrcMessageError
 {
 	IRC_MESSAGE_NO_ERROR	= 0,
-	IRC_PREFIX_ERROR		= 1 << 0, 
-	IRC_COMMAND_ERROR		= 1 << 1,
-	IRC_PARAMS_ERROR		= 1 << 2
+	IRC_MESSAGE_ERROR		= 1 << 0,
+	IRC_PREFIX_ERROR		= 1 << 1, 
+	IRC_COMMAND_ERROR		= 1 << 2,
+	IRC_PARAMS_ERROR		= 1 << 3
 };
 
 typedef uint8_t	IrcMessageError;
@@ -31,24 +32,21 @@ typedef uint8_t	IrcMessageError;
 class IrcMessage
 {
 	private:
-		static BNFVar const			initialParser;
-		BNFVar						parser;
-		std::string					prefix;
-		std::string					command;
-		std::vector<std::string>	params;	
-		IrcMessageError				error;
+		static BNFVar	parser;
+		BNFFind			prefix;
+		BNFFind			command;
+		BNFFind			params;	
+		IrcMessageError	error;
 
 	public:
-										IrcMessage(void);
-										IrcMessage(std::string const &msg);
-										IrcMessage(IrcMessage const &other);
-										~IrcMessage(void);
-		IrcMessageError					parse(std::string const &msg);
-		IrcMessageError					getError(void) const;
-		std::string const				&getPrefix(void) const;
-		std::string const				&getCommand(void) const;
-		std::vector<std::string> const	&getParams(void) const;
-		IrcMessage						&operator=(IrcMessage const &other);
+							IrcMessage(void);
+							IrcMessage(std::string const &msg);
+							IrcMessage(IrcMessage const &other);
+							~IrcMessage(void);
+		IrcMessageError		parse(std::string const &msg, size_t start = 0);
+		IrcMessageError		getError(void) const;
+		BNFFind	const		&getPrefix(void) const;
+		BNFFind const		&getCommand(void) const;
+		BNFFind const		&getParams(void) const;
+		IrcMessage			&operator=(IrcMessage const &other);
 };
-
-typedef size_t (*TIrcParseFunc)(std::stringstream);
