@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:42:21 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:16:45 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,6 @@ BNFVar::~BNFVar(void)
 std::string BNFVar::getFormatName(void) const
 {
     return (this->name);
-}
-
-void		BNFVar::reset(void)
-{
-	this->rule->reset();
-	this->value = this->rule->getValue();
-	this->errorPos = this->rule->getErrorPos();
 }
 
 BNFParser	*BNFVar::clone(void) const

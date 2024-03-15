@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 02:09:35 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 15:33:53 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ IrcMessageError		IrcMessage::parse(std::string const &msg, size_t start)
 	this->params = IrcMessage::parser["params"];
 	if (this->params.size() && (this->params)[0].getErrorPos() != BNF_ERROR_POS_NONE)
 		this->error |= IRC_PARAMS_ERROR;
-	this->params = IrcMessage::parser["middle"].isSuccess();
-	this->params.merge(IrcMessage::parser["trailing"].isSuccess());
+	this->params = IrcMessage::parser["middle"];
+	this->params.merge(IrcMessage::parser["trailing"]);
 	return (this->error);
 }
 

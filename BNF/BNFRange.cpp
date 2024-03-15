@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:37:17 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 16:57:31 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,6 @@ BNFRange::~BNFRange(void)
 std::string BNFRange::getFormatName(void) const
 {
 	return (this->name);
-}
-
-void		BNFRange::reset(void)
-{
-	this->errorPos = BNF_ERROR_POS_UNINITIALIZED;
-	this->value.clear();
 }
 
 BNFParser	*BNFRange::clone(void) const

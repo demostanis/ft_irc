@@ -6,13 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:40:50 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:32:42 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BNFAlts.hpp"
 
-BNFAlts::BNFAlts(std::string const &name, t_uint count, ...): BNFParser(name)
+BNFAlts::BNFAlts(std::string const &name, t_uint count, ...): BNFParser(name) 
 {
 	va_list	argList;
 
@@ -41,33 +41,23 @@ BNFAlts::BNFAlts(t_uint count, ...): BNFParser("")
 
 BNFAlts::BNFAlts(BNFAlts const &other):	BNFParser(other)
 {
-	std::vector<BNFParser *>::const_iterator	cr;
+	t_uint	cr;
 
-	for (cr = other.rules.begin(); cr != other.rules.end(); cr++)
-		this->rules.push_back((*cr)->clone());
+	for (cr = 0; cr < other.rules.size(); cr++)
+		this->rules.push_back(other.rules[cr]->clone());
 }
 
 BNFAlts::~BNFAlts(void)
 {
-	std::vector<BNFParser *>::iterator	cr;
+	t_uint	cr;
 
-	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
-		delete *cr;
+	for (cr = 0; cr < this->rules.size(); cr++)
+		delete this->rules[cr];
 }
 
 std::string BNFAlts::getFormatName(void) const
 {
     return ('(' + this->name + ')');
-}
-
-void		BNFAlts::reset(void)
-{
-	std::vector<BNFParser *>::iterator	cr;
-
-	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
-		(*cr)->reset();
-	this->errorPos = BNF_ERROR_POS_UNINITIALIZED;
-	this->value.clear();
 }
 
 BNFParser	*BNFAlts::clone(void) const
@@ -77,26 +67,26 @@ BNFParser	*BNFAlts::clone(void) const
 
 ssize_t		BNFAlts::parse(std::string const &str, size_t start)
 {
-	ssize_t								finalLen(BNF_PARSE_ERROR);
-	ssize_t								finalErrorPos(BNF_ERROR_POS_NONE);
-	ssize_t								len;
-	std::vector<BNFParser *>::iterator	cr;
+	ssize_t	finalLen(BNF_PARSE_ERROR);
+	ssize_t	len;
+	t_uint	cr;
 
 	this->value.clear();
-	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
+	this->ruleEnd = 0;
+	for (cr = 0; cr < this->rules.size(); cr++)
 	{
-		len = (*cr)->parse(str, start);
-		finalLen = std::max(finalLen, len);
-		finalErrorPos = std::max(finalErrorPos, (*cr)->getErrorPos());
+		len = this->rules[cr]->parse(str, start);
+		if (finalLen < len)
+		{
+			finalLen = len;
+			this->ruleEnd = cr;
+		}
+		else if (finalLen == BNF_PARSE_ERROR
+				&& this->rules[cr]->getErrorPos() < this->rules[this->ruleEnd]->getErrorPos())
+			this->ruleEnd = cr;
 	}
-	if (finalLen == BNF_PARSE_ERROR)
-	{
-		this->value = str.substr(start, finalErrorPos - start);
-		this->errorPos = finalErrorPos;
-		return (BNF_PARSE_ERROR);
-	}
-	this->value = str.substr(start, finalLen);
-	this->errorPos = BNF_ERROR_POS_NONE;
+	this->value = this->rules[this->ruleEnd]->getValue();
+	this->errorPos = this->rules[this->ruleEnd]->getErrorPos();
 	return (finalLen);
 }
 
@@ -160,11 +150,9 @@ BNFRep      BNFAlts::operator-(size_t min) const
 
 BNFFind		BNFAlts::operator[](std::string const &name) const
 {
-	BNFFind										res;
-	std::vector<BNFParser *>::const_iterator	cr;
+	BNFFind	res;
 
-	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
-		res.merge((**cr)[name]);
+	res.merge((*this->rules[this->ruleEnd])[name]);
 	res.pushParent(*this);
 	if (this->name == name)
 		res.push_back(BNFInher(*this));
@@ -173,13 +161,14 @@ BNFFind		BNFAlts::operator[](std::string const &name) const
 
 BNFAlts	&BNFAlts::operator=(BNFAlts const &other)
 {
-	std::vector<BNFParser *>::const_iterator	cr;
+	t_uint	cr;
 
-	for (cr = this->rules.begin(); cr != this->rules.end(); cr++)
-		delete *cr;
+	for (cr = 0; cr < this->rules.size(); cr++)
+		delete this->rules[cr];
 	this->rules.clear();
 	*static_cast<BNFParser *>(this) = other;
-	for (cr = other.rules.begin(); cr != other.rules.end(); cr++)
-		this->rules.push_back((*cr)->clone());
+	for (cr = 0; cr < other.rules.size(); cr++)
+		this->rules.push_back((other.rules[cr])->clone());
+	this->ruleEnd = other.ruleEnd;
 	return (*this);
 }

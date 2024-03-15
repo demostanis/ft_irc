@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 01:13:53 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:28:47 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,19 +49,19 @@ bool				BNFInher::isHeir(t_uint count, ...) const
 
 bool				BNFInher::isHeir(t_uint count, va_list argList) const
 {
-	std::vector<std::string>::const_iterator	cr;
-	char										*parent;
+	char	*parent;
+	t_uint	cr;
 
-	cr = this->inher.begin();
-	while (cr != this->inher.end() && count)
+	cr = 0;
+	while (cr < this->inher.size() && count)
 	{
 		parent = va_arg(argList, char *);
-		while (cr != this->inher.end() && *cr != parent)
+		while (cr < this->inher.size() && this->inher[cr] != parent)
 			cr++;
 		count--;
 	}
 	va_end(argList);
-	if (cr == this->inher.end())
+	if (cr == this->inher.size())
 		return (false);	
 	return (true);
 }

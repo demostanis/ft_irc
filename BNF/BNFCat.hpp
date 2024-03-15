@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:40:02 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/15 10:06:28 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ class BNFCat: public BNFParser
 {
 	protected:
 		std::vector<BNFParser *>	rules;
+		t_uint						ruleEnd;
 
 	public:
 					BNFCat(std::string const &name, t_uint count, ...);
@@ -30,7 +31,6 @@ class BNFCat: public BNFParser
 					BNFCat(BNFCat const &other);
 					~BNFCat(void);
 		std::string getFormatName(void) const;
-		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
 		BNFAlts     operator|(BNFParser const &other) const;

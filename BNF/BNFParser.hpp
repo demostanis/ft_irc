@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:32:47 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 16:34:12 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ class BNFParser
 		std::string const	&getValue(void) const;
 		ssize_t				getErrorPos(void) const;
 		virtual std::string	getFormatName(void) const = 0;
-		virtual void		reset(void) = 0;
 		virtual BNFParser	*clone(void) const = 0;
 		virtual ssize_t		parse(std::string const &str, size_t start = 0) = 0;
 		virtual BNFAlts		operator|(BNFParser const &other) const = 0;

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:40:19 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 16:33:45 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ class BNFAlts: public BNFParser
 {
 	protected:
 		std::vector<BNFParser *>	rules;
+		t_uint						ruleEnd;
 
 	public:
 					BNFAlts(std::string const &name, t_uint count, ...);
@@ -31,7 +32,6 @@ class BNFAlts: public BNFParser
 					BNFAlts(BNFAlts const &other);
 					~BNFAlts(void);
 		std::string getFormatName(void) const;
-		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
 		BNFAlts     operator|(BNFParser const &other) const;

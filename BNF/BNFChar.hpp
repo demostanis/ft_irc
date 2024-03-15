@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 00:33:04 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/14 16:56:15 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ class BNFChar: public BNFParser
 					BNFChar(BNFChar const &other);
 					~BNFChar(void);
 		std::string	getFormatName(void) const;
-		void		reset(void);
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
 		BNFAlts		operator|(BNFParser const &other) const;
