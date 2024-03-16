@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 21:34:32 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 21:36:17 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,6 @@
 #include "Config.hpp"
 
 extern Config	config;
-
-		Pass::Pass()
-{
-}
-
-		Pass::~Pass()
-{
-}
 
 void	Pass::handle(IrcMessage &msg)
 {
