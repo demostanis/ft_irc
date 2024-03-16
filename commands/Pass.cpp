@@ -6,12 +6,11 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 21:36:17 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 22:01:42 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "commands/Pass.hpp"
-#include "Config.hpp"
 
 extern Config	config;
 

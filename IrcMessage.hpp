@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/16 21:23:42 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 21:53:56 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,11 @@ enum ReplyError
 	ERR_UNKNOWNCOMMAND = 421,
 	ERR_NEEDMOREPARAMS = 461,
 	ERR_PASSWDMISMATCH = 464,
-	ERR_ALREADYREGISTERED = 462
+	ERR_ALREADYREGISTERED = 462,
+	ERR_NOTREGISTERED = 451,
+	ERR_NICKNAMEINUSE = 433,
+	ERR_NONICKNAMEGIVEN = 431,
+	ERR_ERRONEOUSNICKAME = 432
 };
 
 typedef uint8_t	IrcMessageError;

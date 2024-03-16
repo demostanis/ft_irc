@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 19:42:48 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 21:31:29 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 22:00:42 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,14 @@ void		ClientManager::broadcast(std::string msg)
 
 	for (it = clients.begin(); it != clients.end(); it++)
 		it->second->send(msg);
+}
+
+bool		ClientManager::isNickInUse(std::string nick)
+{
+	std::map<int, IrcClient*>::iterator	it;
+
+	for (it = clients.begin(); it != clients.end(); it++)
+		if (it->second->getNick() == nick)
+			return (true);
+	return (false);
 }

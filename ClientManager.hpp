@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 19:41:28 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 21:28:56 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 22:00:20 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,5 @@ public:
 	static void				unregisterClient(int fd);
 	static IrcClient		*getClient(int fd);
 	static void				broadcast(std::string msg);
+	static bool				isNickInUse(std::string nick);
 };
