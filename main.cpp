@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 20:43:33 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 23:09:31 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,22 @@
 
 #include "commands/Nick.hpp"
 #include "commands/Pass.hpp"
+#include "commands/User.hpp"
+#include "commands/Cap.hpp"
 
 typedef void	(*command)(IrcMessage&);
 
 static command		commandHandlers[] = {
 	&Nick::handle,
 	&Pass::handle,
+	&User::handle,
+	&Cap::handle,
 };
 static std::string	commandNames[] = {
 	"NICK",
 	"PASS",
+	"USER",
+	"CAP",
 };
 
 Config		config;

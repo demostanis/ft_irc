@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 22:01:42 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 22:33:16 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ void	Pass::handle(IrcMessage &msg)
 		{
 			if (client)
 			{
-				if (client->isRegistered())
+				if (client->getHasGivenPassword())
 					msg.replyError(ERR_ALREADYREGISTERED, ":You may not reregister");
 				else
-					client->hasRegistered();
+					client->setHasGivenPassword();
 			}
 		}
 		else

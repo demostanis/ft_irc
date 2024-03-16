@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 22:02:36 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 22:35:40 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,9 @@ void	Nick::handle(IrcMessage &msg)
 {
 	IrcClient	*client	= msg.getClient();
 
-	if (!client->isRegistered())
+	if (!client->getHasGivenPassword())
 	{
-		msg.replyError(ERR_NOTREGISTERED, ":You have not registered");
+		msg.replyError(ERR_PASSWDMISMATCH, ":You haven't provided a password with PASS");
 		return ;
 	}
 	if (msg.getParams().size() == 0)

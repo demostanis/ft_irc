@@ -30,8 +30,10 @@ SRC 		= BNF/BNFAlts.cpp\
 			  SocketTcpClient.cpp\
 			  SocketTcpServer.cpp\
 			  ClientManager.cpp\
-			  commands/Nick.cpp\
 			  commands/Pass.cpp\
+			  commands/Nick.cpp\
+			  commands/User.cpp\
+			  commands/Cap.cpp\
 			  Config.cpp
 
 SRC_MITM	= Mitm.cpp\
