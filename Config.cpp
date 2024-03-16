@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:06:23 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/13 20:18:05 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 20:54:50 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,6 @@ void	Config::read(std::string filename) throw(ParseError)
 void	Config::parse(void) throw(MissingError)
 {
 	REQUIRE_ONE(admin, std::string);
+	REQUIRE_ONE(prefix, std::string);
+	REQUIRE_ONE(password, std::string);
 }
