@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:52:02 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/08 18:06:34 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 20:54:15 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 
 static const std::string	allowedKeys[] = {
 	"admin",
+	"prefix",
+	"password",
 };
 
 class	Config
@@ -57,4 +59,6 @@ public:
 
 	// J'aime pas les getters moi
 	std::string	admin;
+	std::string	prefix;
+	std::string	password;
 };

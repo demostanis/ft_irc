@@ -6,13 +6,31 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/15 10:46:27 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 20:43:33 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Config.hpp"
 #include "IrcServer.hpp"
+#include <algorithm>
 
+#include "commands/Nick.hpp"
+#include "commands/Pass.hpp"
+
+typedef void	(*command)(IrcMessage&);
+
+static command		commandHandlers[] = {
+	&Nick::handle,
+	&Pass::handle,
+};
+static std::string	commandNames[] = {
+	"NICK",
+	"PASS",
+};
+
+Config		config;
+
+// TODO: parse the config with BNF
 bool	parse_config(std::string filename, Config &config)
 {
 	bool	succeeded = false;
@@ -40,34 +58,67 @@ bool	parse_config(std::string filename, Config &config)
 	return (succeeded);
 }
 
-void	test(void)
+std::string	&toUppercase(std::string &str)
+{
+	std::string::iterator	it;
+
+	for (it = str.begin(); it != str.end(); it++)
+		*it = toupper(*it);
+	return (str);
+}
+
+static void	commandNotFound(std::string command, IrcMessage &msg)
+{
+	msg.replyError(ERR_UNKNOWNCOMMAND, command + " :Unknown command");
+}
+
+static void	handleCommand(IrcMessage &msg)
+{
+	bool		found;
+	std::string	command;
+	size_t		i;
+
+	found = false;
+	command = msg.getCommand()[0].getValue();
+	for (i = 0; i < sizeof(commandNames)/sizeof(commandNames[0]); i++)
+	{
+		if (commandNames[i] == toUppercase(command))
+		{
+			commandHandlers[i](msg);
+			found = true;
+		}
+	}
+	if (!found)
+		commandNotFound(command, msg);
+}
+
+static int	listenForConnections(void)
 {
 	BNFFind::const_iterator	cr;
 	IrcMessage				msg;
 	IrcServer				server;
+	std::string				command;
 	
 	if (!server.isConnected())
-		return ;
-	int i = 0;
-	while (i++ < 3)
+	{
+		std::cerr << "failed to start server" << std::endl;
+		return (1);
+	}
+	while (1)
 	{
 		if (server.getNextMessage(msg))
 		{
-			std::cout << "getNextMessage Error" << std::endl;
-			return ;
+			std::cout << "failed to read message" << std::endl;
+			continue ;
 		}
-		if (msg.getPrefix().size())
-			std::cout << "prefix: " << (msg.getPrefix())[0].getValue() << std::endl;
-		if (msg.getCommand().size())
-			std::cout << "command: " << (msg.getCommand())[0].getValue() << std::endl;
-		for (cr = msg.getParams().begin(); cr != msg.getParams().end(); cr++)
-			std::cout << "params: " << (*cr).getValue() << std::endl;
+		if (msg.getCommand().size() > 0)
+			handleCommand(msg);
 	}
+	return (0);
 }
 
 int	main(int argc, char **argv)
 {
-	Config		config;
 	std::string	filename;
 
 	if (argc != 2)
@@ -79,6 +130,7 @@ int	main(int argc, char **argv)
 	if (!parse_config(filename, config))
 		return (1);
 	std::cout << "Welcome to ircserv!" << std::endl;
+	std::cout << "  Prefix: " << config.prefix << std::endl;
 	std::cout << "  Admin: " << config.admin << std::endl;
-	test();
+	return (listenForConnections());
 }
