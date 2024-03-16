@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 21:32:17 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/16 21:44:39 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,16 @@
 class IrcClient: public SocketTcpClient
 {
 private:
-	bool	registered;
+	bool				registered;
+	std::string			nick;
 
 public:
 			IrcClient();
 			IrcClient(SocketTcpClient *client);
 			~IrcClient();
 
-	bool	isRegistered(void) const;
-	void	hasRegistered();
+	bool				isRegistered(void) const;
+	void				hasRegistered();
+	void				setNick(const std::string &nick);
+	const std::string	&getNick() const;
 };
