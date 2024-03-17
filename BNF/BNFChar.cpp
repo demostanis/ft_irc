@@ -61,7 +61,7 @@ BNFAlts		BNFChar::operator|(BNFParser const &other) const
 
 BNFAlts      BNFChar::operator|(std::string const &str) const
 {
-    BNFString   tmp(str);
+    BNFStr   tmp(str);
 
     return (BNFAlts(2, this, &tmp));
 }
@@ -80,7 +80,7 @@ BNFCat		BNFChar::operator&(BNFParser const &other) const
 
 BNFCat		BNFChar::operator&(std::string const &str) const
 {
-	BNFString	tmp(str);
+	BNFStr	tmp(str);
 
 	return (BNFCat(2, this, &tmp));
 }
@@ -92,7 +92,7 @@ BNFCat      BNFChar::operator&(char c) const
     return (BNFCat(2, this, &tmp));
 }
 
-BNFRep		BNFChar::operator^(size_t n) const
+BNFRep		BNFChar::operator%(size_t n) const
 {
 	return (BNFRep(*this, n, n));
 }

@@ -15,7 +15,7 @@
 #include "BNFAlts.hpp"
 #include "BNFCat.hpp"
 #include "BNFRep.hpp"
-#include "BNFString.hpp"
+#include "BNFStr.hpp"
 #include "BNFChar.hpp"
 #include "BNFParser.hpp"
 
@@ -39,7 +39,7 @@ class BNFCat: public BNFParser
         BNFCat      operator&(BNFParser const &other) const;
 		BNFCat      operator&(std::string const &str) const;
 		BNFCat      operator&(char c) const;
-		BNFRep      operator^(size_t n) const;
+		BNFRep      operator%(size_t n) const;
 		BNFRep      operator!(void) const;
         BNFRep      operator+(size_t max) const;
         BNFRep      operator-(size_t min) const;

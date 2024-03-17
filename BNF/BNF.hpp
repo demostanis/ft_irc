@@ -14,7 +14,7 @@
 
 #include "BNFChar.hpp"
 #include "BNFRange.hpp"
-#include "BNFString.hpp"
+#include "BNFStr.hpp"
 #include "BNFRep.hpp"
 #include "BNFCat.hpp"
 #include "BNFAlts.hpp"

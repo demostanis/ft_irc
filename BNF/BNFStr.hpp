@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BNFString.hpp                                      :+:      :+:    :+:   */
+/*   BNFStr.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,16 +18,16 @@
 #include "BNFChar.hpp"
 #include "BNFParser.hpp"
 
-class BNFString: public BNFParser
+class BNFStr: public BNFParser
 {
 	protected:
 		std::string	str;
 
 	public:
-					BNFString(std::string const &name, std::string const &str);
-					BNFString(std::string const &str);
-					BNFString(BNFString const &other);
-					~BNFString(void);
+					BNFStr(std::string const &name, std::string const &str);
+					BNFStr(std::string const &str);
+					BNFStr(BNFStr const &other);
+					~BNFStr(void);
 		std::string getFormatName(void) const;
 		BNFParser	*clone(void) const;
 		ssize_t		parse(std::string const &str, size_t start = 0);
@@ -37,10 +37,10 @@ class BNFString: public BNFParser
         BNFCat      operator&(BNFParser const &other) const;
 		BNFCat      operator&(std::string const &str) const;
 		BNFCat      operator&(char c) const;
-		BNFRep      operator^(size_t n) const;
+		BNFRep      operator%(size_t n) const;
 		BNFRep      operator!(void) const;
         BNFRep      operator+(size_t max) const;
         BNFRep      operator-(size_t min) const;
 		BNFFind		operator[](std::string const &name) const;
-		BNFString	&operator=(BNFString const &other);
+		BNFStr	&operator=(BNFStr const &other);
 };

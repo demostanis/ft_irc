@@ -101,7 +101,7 @@ BNFAlts     BNFAlts::operator|(BNFParser const &other) const
 
 BNFAlts      BNFAlts::operator|(std::string const &str) const
 {
-    BNFString   *tmp(new BNFString(str));
+    BNFStr   *tmp(new BNFStr(str));
 	BNFAlts		res(*this);
 
 	res.name += '|' + tmp->getFormatName();
@@ -126,7 +126,7 @@ BNFCat		BNFAlts::operator&(BNFParser const &other) const
 
 BNFCat      BNFAlts::operator&(std::string const &str) const
 {
-    BNFString   tmp(str);
+    BNFStr   tmp(str);
 
     return (BNFCat(2, this, &tmp));
 }
@@ -138,7 +138,7 @@ BNFCat      BNFAlts::operator&(char c) const
     return (BNFCat(2, this, &tmp));
 }
 
-BNFRep      BNFAlts::operator^(size_t n) const
+BNFRep      BNFAlts::operator%(size_t n) const
 {
     return (BNFRep(*this, n, n));
 }

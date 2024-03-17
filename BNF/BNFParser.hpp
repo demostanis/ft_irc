@@ -50,7 +50,7 @@ class BNFParser
 		virtual BNFCat		operator&(BNFParser const &other) const = 0;
 		virtual BNFCat		operator&(std::string const &str) const = 0;
 		virtual BNFCat      operator&(char c) const = 0;
-		virtual BNFRep		operator^(size_t n) const = 0;
+		virtual BNFRep		operator%(size_t n) const = 0;
 		virtual BNFRep		operator!(void) const = 0;
 		virtual BNFRep		operator+(size_t max) const = 0;
 		virtual BNFRep		operator-(size_t min) const = 0;

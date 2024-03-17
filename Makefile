@@ -20,7 +20,7 @@ SRC 		= BNF/BNFAlts.cpp\
 			  BNF/BNFParser.cpp\
 			  BNF/BNFRange.cpp\
 			  BNF/BNFRep.cpp\
-			  BNF/BNFString.cpp\
+			  BNF/BNFStr.cpp\
 			  BNF/BNFVar.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\

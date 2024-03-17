@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BNFString.cpp                                      :+:      :+:    :+:   */
+/*   BNFStr.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,38 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BNFString.hpp"
+#include "BNFStr.hpp"
 
-BNFString::BNFString(std::string const &name, std::string const &str):	BNFParser(name),
+BNFStr::BNFStr(std::string const &name, std::string const &str):	BNFParser(name),
 																		str(str)
 {
 }
 
-BNFString::BNFString(std::string const &str):	BNFParser('\"' + str + '\"'),
+BNFStr::BNFStr(std::string const &str):	BNFParser('\"' + str + '\"'),
 												str(str)
 {
 }
 
-BNFString::BNFString(BNFString const &other):	BNFParser(other),
+BNFStr::BNFStr(BNFStr const &other):	BNFParser(other),
 												str(other.str)
 {
 }
 
-BNFString::~BNFString(void)
+BNFStr::~BNFStr(void)
 {
 }
 
-std::string BNFString::getFormatName(void) const
+std::string BNFStr::getFormatName(void) const
 {
 	return (this->name);
 }
 
-BNFParser	*BNFString::clone(void) const
+BNFParser	*BNFStr::clone(void) const
 {
-	return (new BNFString(*this));
+	return (new BNFStr(*this));
 }
 
-ssize_t		BNFString::parse(std::string const &str, size_t start)
+ssize_t		BNFStr::parse(std::string const &str, size_t start)
 {
 	this->value.clear();
 	if (str.length() < start + this->str.length()
@@ -55,65 +55,65 @@ ssize_t		BNFString::parse(std::string const &str, size_t start)
 	return (this->str.length());
 }
 
-BNFAlts		BNFString::operator|(BNFParser const &other) const
+BNFAlts		BNFStr::operator|(BNFParser const &other) const
 {
 	return (BNFAlts(2, this, &other));
 }
 
-BNFAlts      BNFString::operator|(std::string const &str) const
+BNFAlts      BNFStr::operator|(std::string const &str) const
 {
-    BNFString   tmp(str);
+    BNFStr   tmp(str);
 
     return (BNFAlts(2, this, &tmp));
 }
 
-BNFAlts      BNFString::operator|(char c) const
+BNFAlts      BNFStr::operator|(char c) const
 {
     BNFChar   tmp(c);
 
     return (BNFAlts(2, this, &tmp));
 }
 
-BNFCat		BNFString::operator&(BNFParser const &other) const
+BNFCat		BNFStr::operator&(BNFParser const &other) const
 {
 	return (BNFCat(2, this, &other));
 }
 
-BNFCat      BNFString::operator&(std::string const &str) const
+BNFCat      BNFStr::operator&(std::string const &str) const
 {
-    BNFString   tmp(str);
+    BNFStr   tmp(str);
 
     return (BNFCat(2, this, &tmp));
 }
 
-BNFCat      BNFString::operator&(char c) const
+BNFCat      BNFStr::operator&(char c) const
 {
     BNFChar   tmp(c);
 
     return (BNFCat(2, this, &tmp));
 }
 
-BNFRep      BNFString::operator^(size_t n) const
+BNFRep      BNFStr::operator%(size_t n) const
 {
     return (BNFRep(*this, n, n));
 }
 
-BNFRep      BNFString::operator!(void) const
+BNFRep      BNFStr::operator!(void) const
 {
     return (BNFRep(*this, 0, 1));
 }
 
-BNFRep		BNFString::operator+(size_t max) const
+BNFRep		BNFStr::operator+(size_t max) const
 {
 	return (BNFRep(*this, 0, max));
 }
 
-BNFRep		BNFString::operator-(size_t min) const
+BNFRep		BNFStr::operator-(size_t min) const
 {
 	return (BNFRep(*this, min, BNF_INFINI));
 }
 
-BNFFind		BNFString::operator[](std::string const &name) const
+BNFFind		BNFStr::operator[](std::string const &name) const
 {
 	BNFFind	res;
 
@@ -122,7 +122,7 @@ BNFFind		BNFString::operator[](std::string const &name) const
 	return (res);
 }
 
-BNFString	&BNFString::operator=(BNFString const &other)
+BNFStr	&BNFStr::operator=(BNFStr const &other)
 {
 	*static_cast<BNFParser *>(this) = other;
 	this->str = other.str;
