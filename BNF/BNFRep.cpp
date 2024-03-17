@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/15 10:05:43 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:12:03 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ BNFRep::BNFRep(std::string const &name, BNFParser const &rule, size_t min, size_
 {
 }
 
-BNFRep::BNFRep(BNFParser const &rule, size_t min, size_t max):	BNFParser(kdo::itoa(min) + '*' + kdo::itoa(max) + rule.getFormatName()),
+BNFRep::BNFRep(BNFParser const &rule, size_t min, size_t max):	BNFParser(BNFRep::getFormatName(rule, min, max)),
 																rule(rule.clone()),
 																ruleEnd(0),
 																min(min),
@@ -49,6 +49,21 @@ BNFRep::~BNFRep(void)
 	delete this->rule;
 	for (cr = 0; cr < this->rules.size(); cr++)
 		delete this->rules[cr];
+}
+
+std::string BNFRep::getFormatName(BNFParser const &rule, size_t min, size_t max)
+{
+	if (min == max)
+		return (kdo::itoa(min) + rule.getFormatName());
+	if (!min && max == 1)
+		return ('[' + rule.getName() + ']');
+	if (!min && max == BNF_INFINI)
+		return ('*' + rule.getFormatName());
+	if (!min)
+		return ('*' + kdo::itoa(max) + rule.getFormatName());
+	if (max == BNF_INFINI)
+		return (kdo::itoa(min) + '*' + rule.getFormatName());
+	return (kdo::itoa(min) + '*' + kdo::itoa(max) + rule.getFormatName());
 }
 
 std::string	BNFRep::getFormatName(void) const
@@ -92,58 +107,60 @@ ssize_t		BNFRep::parse(std::string const &str, size_t start)
 
 BNFAlts		BNFRep::operator|(BNFParser const &other) const
 {
-	return (BNFAlts(this->getFormatName() + '|' + other.getFormatName(), 2, this, &other));
+	return (BNFAlts(2, this, &other));
 }
 
 BNFAlts      BNFRep::operator|(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFAlts      BNFRep::operator|(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFCat		BNFRep::operator&(BNFParser const &other) const
 {
-	return (BNFCat(this->getFormatName() + '&' + other.getFormatName(), 2, this, &other));
+	return (BNFCat(2, this, &other));
 }
 
 BNFCat      BNFRep::operator&(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
 }
 
 BNFCat      BNFRep::operator&(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
+}
+
+BNFRep      BNFRep::operator^(size_t n) const
+{
+	return (BNFRep(*this->rule, n, n));
+}
+
+BNFRep      BNFRep::operator!(void) const
+{
+	return (BNFRep(*this->rule, 0, 1));
 }
 
 BNFRep		BNFRep::operator+(size_t max) const
 {
-	BNFRep		res(*this);
-
-	res.name += '+' + kdo::itoa(max);
-	res.max = max;
-	return (res);
+	return (BNFRep(*this->rule, this->min, max));
 }
 
 BNFRep		BNFRep::operator-(size_t min) const
 {
-	BNFRep		res(*this);
-	
-	res.name += '-' + kdo::itoa(min);
-	res.min = min;
-	return (res);
+	return (BNFRep(*this->rule, min, this->max));
 }
 
 BNFFind		BNFRep::operator[](std::string const &name) const

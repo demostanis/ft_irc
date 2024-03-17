@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 16:57:22 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 10:40:10 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ class BNFRange: public BNFParser
         BNFCat      operator&(BNFParser const &other) const;
 		BNFCat      operator&(std::string const &str) const;
 		BNFCat      operator&(char c) const;
+		BNFRep      operator^(size_t n) const;
+		BNFRep      operator!(void) const;
         BNFRep      operator+(size_t max) const;
         BNFRep      operator-(size_t min) const;
 		BNFFind		operator[](std::string const &name) const;

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 16:55:27 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:01:41 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ BNFCat::BNFCat(t_uint count, ...):	BNFParser(""),
 		this->rules.push_back(cr);
 		this->name += cr->getFormatName();
 		if (count)
-			this->name += '&';
+			this->name += ' ';
 	}
 	va_end(argList);
 }
@@ -96,28 +96,28 @@ ssize_t		BNFCat::parse(std::string const &str, size_t start)
 
 BNFAlts     BNFCat::operator|(BNFParser const &other) const
 {
-	return (BNFAlts(this->getFormatName() + '|' + other.getFormatName(), 2, this, &other));
+	return (BNFAlts(2, this, &other));
 }
 
 BNFAlts      BNFCat::operator|(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFAlts      BNFCat::operator|(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFCat      BNFCat::operator&(BNFParser const &other) const
 {
 	BNFCat	res(*this);
 
-	res.name += '&' + other.getFormatName();
+	res.name += ' ' + other.getFormatName();
 	res.rules.push_back(other.clone());
 	return (res);
 }
@@ -127,7 +127,7 @@ BNFCat      BNFCat::operator&(std::string const &str) const
     BNFString	*tmp(new BNFString(str));
 	BNFCat		res(*this);
 
-	res.name += '&' + tmp->getFormatName();
+	res.name += ' ' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
@@ -137,19 +137,29 @@ BNFCat      BNFCat::operator&(char c) const
     BNFChar	*tmp(new BNFChar(c));
 	BNFCat	res(*this);
 
-	res.name += '&' + tmp->getFormatName();
+	res.name += ' ' + tmp->getFormatName();
 	res.rules.push_back(tmp);
 	return (res);
 }
 
+BNFRep      BNFCat::operator^(size_t n) const
+{
+    return (BNFRep(*this, n, n));
+}
+
+BNFRep      BNFCat::operator!(void) const
+{
+    return (BNFRep(*this, 0, 1));
+}
+
 BNFRep      BNFCat::operator+(size_t max) const
 {
-	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
+	return (BNFRep(*this, 0, max));
 }
 
 BNFRep		BNFCat::operator-(size_t min) const
 {
-	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
+	return (BNFRep(*this, min, BNF_INFINI));
 }
 
 BNFFind		BNFCat::operator[](std::string const &name) const

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/15 09:57:38 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 11:29:23 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ class BNFRep: public BNFParser
 		size_t						min;
 		size_t						max;
 
+		static std::string getFormatName(BNFParser const &rule, size_t min, size_t max);
+
 	public:
 					BNFRep(std::string const &name, BNFParser const &rule, size_t min, size_t max);
 					BNFRep(BNFParser const &rule, size_t min, size_t max);
@@ -41,6 +43,8 @@ class BNFRep: public BNFParser
         BNFCat      operator&(BNFParser const &other) const;
 		BNFCat      operator&(std::string const &str) const;
 		BNFCat      operator&(char c) const;
+		BNFRep      operator^(size_t n) const;
+		BNFRep      operator!(void) const;
         BNFRep      operator+(size_t max) const;
         BNFRep      operator-(size_t min) const;
 		BNFFind		operator[](std::string const &name) const;

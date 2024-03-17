@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/15 10:16:45 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:13:30 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,50 +54,60 @@ ssize_t		BNFVar::parse(std::string const &str, size_t start)
 
 BNFAlts     BNFVar::operator|(BNFParser const &other) const
 {
-	return (BNFAlts(this->getFormatName() + '|' + other.getFormatName(), 2, this, &other));
+	return (BNFAlts(2, this, &other));
 }
 
 BNFAlts      BNFVar::operator|(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFAlts      BNFVar::operator|(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFAlts(this->getFormatName() + '|' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFAlts(2, this, &tmp));
 }
 
 BNFCat      BNFVar::operator&(BNFParser const &other) const
 {
-	return (BNFCat(this->getFormatName() + '&' + other.getFormatName(), 2, this, &other));
+	return (BNFCat(2, this, &other));
 }
 
 BNFCat      BNFVar::operator&(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
 }
 
 BNFCat      BNFVar::operator&(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
+}
+
+BNFRep      BNFVar::operator^(size_t n) const
+{
+    return (BNFRep(*this, n, n));
+}
+
+BNFRep      BNFVar::operator!(void) const
+{
+    return (BNFRep(*this, 0, 1));
 }
 
 BNFRep      BNFVar::operator+(size_t max) const
 {
-	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
+	return (BNFRep(*this, 0, max));
 }
 
 BNFRep		BNFVar::operator-(size_t min) const
 {
-	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
+	return (BNFRep(*this, min, BNF_INFINI));
 }
 
 BNFFind		BNFVar::operator[](std::string const &name) const

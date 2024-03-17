@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/15 10:32:42 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/17 12:07:24 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,31 +121,41 @@ BNFAlts      BNFAlts::operator|(char c) const
 
 BNFCat		BNFAlts::operator&(BNFParser const &other) const
 {
-	return (BNFCat(this->getFormatName() + '&' + other.getFormatName(), 2, this, &other));
+	return (BNFCat(2, this, &other));
 }
 
 BNFCat      BNFAlts::operator&(std::string const &str) const
 {
     BNFString   tmp(str);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
 }
 
 BNFCat      BNFAlts::operator&(char c) const
 {
     BNFChar   tmp(c);
 
-    return (BNFCat(this->getFormatName() + '&' + tmp.getFormatName(), 2, this, &tmp));
+    return (BNFCat(2, this, &tmp));
+}
+
+BNFRep      BNFAlts::operator^(size_t n) const
+{
+    return (BNFRep(*this, n, n));
+}
+
+BNFRep      BNFAlts::operator!(void) const
+{
+    return (BNFRep(*this, 0, 1));
 }
 
 BNFRep      BNFAlts::operator+(size_t max) const
 {
-	return (BNFRep(this->getFormatName() + '+' + kdo::itoa(max), *this, 0, max));
+	return (BNFRep(*this, 0, max));
 }
 
 BNFRep      BNFAlts::operator-(size_t min) const
 {
-	return (BNFRep(this->getFormatName() + '-' + kdo::itoa(min), *this, min, BNF_INFINI));
+	return (BNFRep(*this, min, BNF_INFINI));
 }
 
 BNFFind		BNFAlts::operator[](std::string const &name) const
