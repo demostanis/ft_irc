@@ -5,7 +5,7 @@ CXX			= c++
 RM			= rm -f
 CLONE 		= git clone --depth=1
 
-CXXFLAGS	+= -Wall -Wextra -Werror -std=c++98
+CXXFLAGS	+= -Wall -Wextra -Werror -std=c++98 -I.
 LDLIBS		=
 
 KDO			= kdolib
@@ -24,10 +24,16 @@ SRC 		= BNF/BNFAlts.cpp\
 			  BNF/BNFVar.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\
+			  IrcClient.cpp\
 			  main.cpp\
 			  Socket.cpp\
 			  SocketTcpClient.cpp\
 			  SocketTcpServer.cpp\
+			  ClientManager.cpp\
+			  commands/Pass.cpp\
+			  commands/Nick.cpp\
+			  commands/User.cpp\
+			  commands/Cap.cpp\
 			  Config.cpp
 
 SRC_MITM	= Mitm.cpp\

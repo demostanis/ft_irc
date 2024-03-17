@@ -6,11 +6,12 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 01:55:51 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 20:44:50 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
+#include "ClientManager.hpp"
 
 IrcServer::IrcServer(std::string const &port):	epoll(INVALID_FD)
 {
@@ -29,7 +30,7 @@ int	IrcServer::reveiveMessage(int clientSocket)
 	std::string		line;
 	size_t			lineStart;
 	size_t			lineEnd;
-	IrcMessage		msg;
+	IrcMessage		msg(clientSocket);
 
 	if (this->getClient(client, clientSocket))
 		return (EXIT_FAILURE);
@@ -90,6 +91,7 @@ int		IrcServer::connectClient(void)
 
 	if (this->SocketTcpServer::accept(newClient))
 		return (perror("accept"), EXIT_ERRNO);
+	ClientManager::registerClient(newClient);
 	event.events = EPOLLIN | EPOLLRDHUP;
 	event.data.fd = newClient->getFd();
 	if (epoll_ctl(this->epoll, EPOLL_CTL_ADD, newClient->getFd(), &event))
@@ -104,6 +106,7 @@ int		IrcServer::connectClient(void)
 
 int		IrcServer::disconnectClient(int clientSocket)
 {
+	ClientManager::unregisterClient(clientSocket);
 	this->SocketTcpServer::disconnectClient(clientSocket);
 	this->lineBuf[clientSocket].clear();
 	std::cout << "[" << clientSocket << "]: disconnect" << std::endl;

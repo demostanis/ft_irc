@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 01:19:47 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 23:03:54 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 #include <vector>
 #include "BNF/BNF.hpp"
+#include "SocketTcpClient.hpp"
+#include "IrcClient.hpp"
 #include "kdolib/kdolib.hpp"
 
 #define PARSE_ERROR -1
@@ -27,6 +29,18 @@ enum EIrcMessageError
 	IRC_PARAMS_ERROR		= 1 << 3
 };
 
+enum ReplyError
+{
+	ERR_UNKNOWNCOMMAND = 421,
+	ERR_NEEDMOREPARAMS = 461,
+	ERR_PASSWDMISMATCH = 464,
+	ERR_ALREADYREGISTERED = 462,
+	ERR_NOTREGISTERED = 451,
+	ERR_NICKNAMEINUSE = 433,
+	ERR_NONICKNAMEGIVEN = 431,
+	ERR_ERRONEOUSNICKAME = 432
+};
+
 typedef uint8_t	IrcMessageError;
 
 class IrcMessage
@@ -37,16 +51,21 @@ class IrcMessage
 		BNFFind			command;
 		BNFFind			params;	
 		IrcMessageError	error;
+		int				clientFd;
 
 	public:
 							IrcMessage(void);
-							IrcMessage(std::string const &msg);
+							IrcMessage(std::string const &msg, int clientFd);
 							IrcMessage(IrcMessage const &other);
+							IrcMessage(int clientFd);
 							~IrcMessage(void);
 		IrcMessageError		parse(std::string const &msg, size_t start = 0);
 		IrcMessageError		getError(void) const;
 		BNFFind	const		&getPrefix(void) const;
 		BNFFind const		&getCommand(void) const;
 		BNFFind const		&getParams(void) const;
+		IrcClient			*getClient(void) const;
+		void				reply(std::string reply) const;
+		void				replyError(int code, std::string reply) const;
 		IrcMessage			&operator=(IrcMessage const &other);
 };

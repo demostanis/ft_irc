@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/08 17:26:07 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:28:18 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,10 @@ SocketTcpClient::SocketTcpClient(void):	connected(false),
 {
 }
 
-
-SocketTcpClient::SocketTcpClient(int socketConnected):	connected(true),
-														addrError(0)
+SocketTcpClient::SocketTcpClient(int fd):	Socket(fd),
+											connected(true),
+											addrError(0)
 {
-	this->connect(socketConnected);
 }
 
 SocketTcpClient::SocketTcpClient(std::string const &addr, std::string const port):	connected(false),

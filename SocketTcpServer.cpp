@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/08 18:41:22 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 19:36:52 by cgodard          ###   ########.fr       */
 /*                                                                            */ /* ************************************************************************** */
 
 #include "SocketTcpServer.hpp"
@@ -46,6 +46,7 @@ int				SocketTcpServer::connect(std::string const &port, int backlog)
 	struct addrinfo				*addrs;
 	struct addrinfo				*cr;
 	int							fd;
+	int							opt;
 
 	this->addrError = this->getAddrs(&addrs, port);
 	if (this->addrError)
@@ -55,6 +56,9 @@ int				SocketTcpServer::connect(std::string const &port, int backlog)
 		fd = ::socket(cr->ai_family, cr->ai_socktype, cr->ai_protocol);
 		if (fd == INVALID_FD)
 			continue;
+		opt = 1;
+		if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+			return (EXIT_ERRNO);
 		if (!::bind(fd, cr->ai_addr, cr->ai_addrlen) && !listen(fd, backlog))
 			break;
 		::close(fd);

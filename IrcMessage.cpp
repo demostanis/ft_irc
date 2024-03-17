@@ -6,11 +6,16 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/14 15:33:53 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:18:55 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcMessage.hpp"
+#include "SocketTcpClient.hpp"
+#include "ClientManager.hpp"
+#include "Config.hpp"
+
+extern Config	config;
 
 BNFVar	getMessageParser(void)
 {
@@ -55,7 +60,8 @@ IrcMessage::IrcMessage(void):	error(IRC_MESSAGE_NO_ERROR)
 IrcMessage::IrcMessage(IrcMessage const &other):	prefix(other.prefix),
 													command(other.command),
 													params(other.params),
-													error(other.error)
+													error(other.error),
+													clientFd(other.clientFd)
 {
 }
 
@@ -63,9 +69,15 @@ IrcMessage::~IrcMessage(void)
 {
 }
 
-IrcMessage::IrcMessage(std::string const &msg):	error(IRC_MESSAGE_NO_ERROR)
+IrcMessage::IrcMessage(std::string const &msg, int clientFd):	error(IRC_MESSAGE_NO_ERROR),
+																clientFd(clientFd)
 {
 	this->parse(msg);
+}
+
+IrcMessage::IrcMessage(int clientFd):	error(IRC_MESSAGE_NO_ERROR),
+										clientFd(clientFd)
+{
 }
 
 IrcMessageError		IrcMessage::parse(std::string const &msg, size_t start)
@@ -107,11 +119,32 @@ BNFFind const		&IrcMessage::getParams(void) const
 	return (this->params);
 }
 
+IrcClient			*IrcMessage::getClient(void) const
+{
+	return (ClientManager::getClient(this->clientFd));
+}
+
+void				IrcMessage::reply(std::string reply) const
+{
+	IrcClient	*client;
+
+	client = ClientManager::getClient(this->clientFd);
+	if (client)
+		client->send(
+			":" + config.prefix + " " + reply + "\r\n");
+}
+
+void				IrcMessage::replyError(int code, std::string reply) const
+{
+	this->reply(kdo::itoa(code) + " * " + reply);
+}
+
 IrcMessage			&IrcMessage::operator=(IrcMessage const &other)
 {
 	this->prefix = other.prefix;
 	this->command = other.command;
 	this->params = other.params;
 	this->error = other.error;
+	this->clientFd = other.clientFd;
 	return (*this);
 }
