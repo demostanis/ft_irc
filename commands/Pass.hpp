@@ -6,18 +6,18 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:11:19 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 22:01:44 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:06:12 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IrcMessage.hpp"
 #include "Config.hpp"
-#include <iostream>
+#include "IrcMessage.hpp"
+#include "IrcServer.hpp"
 
 class Pass
 {
-public:
-	static void	handle(IrcMessage &msg);
+	public:
+		static void	handle(IrcServer &server, IrcMessage &msg);
 };

@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 22:33:16 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:05:45 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 extern Config	config;
 
-void	Pass::handle(IrcMessage &msg)
+void	Pass::handle(IrcServer &server, IrcMessage &msg)
 {
+	(void)server;
 	if (msg.getParams().size() == 0)
 		msg.replyError(ERR_NEEDMOREPARAMS, "PASS :Not enough parameters");
 	else

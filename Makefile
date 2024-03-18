@@ -1,5 +1,4 @@
 NAME 		= ircserv
-MITM		= mitm
 
 CXX			= c++
 RM			= rm -f
@@ -11,46 +10,22 @@ LDLIBS		=
 KDO			= kdolib
 KDOLIB		= $(KDO)/kdolib.a
 
-SRC 		= BNF/BNFAlts.cpp\
-			  BNF/BNFCat.cpp\
-			  BNF/BNFChar.cpp\
-			  BNF/BNF.cpp\
-			  BNF/BNFFind.cpp\
-			  BNF/BNFInher.cpp\
-			  BNF/BNFParser.cpp\
-			  BNF/BNFRange.cpp\
-			  BNF/BNFRep.cpp\
-			  BNF/BNFStr.cpp\
-			  BNF/BNFVar.cpp\
+SRC 		= commands/Cap.cpp\
+			  commands/Nick.cpp\
+			  commands/Pass.cpp\
+			  commands/User.cpp\
+			  Config.cpp\
+			  IrcClient.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\
-			  IrcClient.cpp\
-			  main.cpp\
-			  Socket.cpp\
-			  SocketTcpClient.cpp\
-			  SocketTcpServer.cpp\
-			  ClientManager.cpp\
-			  commands/Pass.cpp\
-			  commands/Nick.cpp\
-			  commands/User.cpp\
-			  commands/Cap.cpp\
-			  Config.cpp
-
-SRC_MITM	= Mitm.cpp\
-			  Socket.cpp\
-			  SocketTcpClient.cpp\
-			  SocketTcpServer.cpp
+			  main.cpp
 
 OBJ 		= $(SRC:.cpp=.o)
-OBJ_MITM	= $(SRC_MITM:.cpp=.o)
 
 all: $(NAME)
 
 $(NAME): $(KDOLIB) $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) $(KDOLIB) $(LDLIBS)
-
-$(MITM): $(KDOLIB) $(OBJ_MITM)
-	$(CXX) $(CXXFLAGS) -o $(MITM) $(OBJ_MITM) $(KDOLIB) $(LDLIBS)
 
 $(KDOLIB): $(KDO)
 	$(MAKE) -C $(KDO)
@@ -64,12 +39,10 @@ $(KDO):
 clean:
 	if [ -d "$(KDO)" ]; then $(MAKE) clean -C $(KDO); fi
 	$(RM) $(OBJ)
-	$(RM) $(OBJ_MITM)
 
 fclean: clean
 	$(RM) $(KDOLIB)
 	$(RM) $(NAME)
-	$(RM) $(MITM)
 
 clear: fclean
 	$(RM) -r $(KDO)

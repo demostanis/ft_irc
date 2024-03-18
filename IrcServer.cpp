@@ -6,12 +6,11 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/16 20:44:50 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:19:57 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcServer.hpp"
-#include "ClientManager.hpp"
 
 IrcServer::IrcServer(std::string const &port):	epoll(INVALID_FD)
 {
@@ -23,17 +22,33 @@ IrcServer::~IrcServer(void)
 	this->disconnect();
 }
 
+int     IrcServer::accept(IrcClient *&client)
+{
+	struct sockaddr_storage clientAddr;
+    socklen_t               addrSize;
+    int                     clientSocket;
+
+    addrSize = sizeof(clientAddr);
+    clientSocket = ::accept(this->fd, (struct sockaddr *)&clientAddr, &addrSize);
+    if (clientSocket == INVALID_FD)
+        return (EXIT_ERRNO);
+    this->clients[clientSocket] = new IrcClient(clientSocket);
+    client = static_cast<IrcClient *>(this->clients[clientSocket]);
+    return (EXIT_SUCCESS);
+}
+
 int	IrcServer::reveiveMessage(int clientSocket)
 {
-	SocketTcpClient	*client;
+	IrcClient		*client;
 	std::string		str;
 	std::string		line;
 	size_t			lineStart;
 	size_t			lineEnd;
-	IrcMessage		msg(clientSocket);
+	IrcMessage		msg;
 
 	if (this->getClient(client, clientSocket))
 		return (EXIT_FAILURE);
+	msg.setClient(client);
 	if (client->recv(str, MSG_DONTWAIT) < 0)
 		return (EXIT_FAILURE);
 	line = this->lineBuf[clientSocket] + str;
@@ -86,12 +101,11 @@ int		IrcServer::getNextMessage(IrcMessage &msg)
 
 int		IrcServer::connectClient(void)
 {
-	SocketTcpClient		*newClient;
+	IrcClient		 	*newClient;
 	struct epoll_event	event = {};
 
-	if (this->SocketTcpServer::accept(newClient))
+	if (this->accept(newClient))
 		return (perror("accept"), EXIT_ERRNO);
-	ClientManager::registerClient(newClient);
 	event.events = EPOLLIN | EPOLLRDHUP;
 	event.data.fd = newClient->getFd();
 	if (epoll_ctl(this->epoll, EPOLL_CTL_ADD, newClient->getFd(), &event))
@@ -106,11 +120,33 @@ int		IrcServer::connectClient(void)
 
 int		IrcServer::disconnectClient(int clientSocket)
 {
-	ClientManager::unregisterClient(clientSocket);
 	this->SocketTcpServer::disconnectClient(clientSocket);
 	this->lineBuf[clientSocket].clear();
 	std::cout << "[" << clientSocket << "]: disconnect" << std::endl;
 	return (epoll_ctl(this->epoll, EPOLL_CTL_DEL, clientSocket, NULL));
+}
+
+int     IrcServer::getClient(IrcClient *&client, int clientSocket)
+{
+	std::map<int, SocketTcpClient *>::iterator  cr;
+
+    cr = this->clients.find(clientSocket);
+    if (cr == this->clients.end())
+        return (EXIT_FAILURE);
+    client = static_cast<IrcClient *>(cr->second);
+    return (EXIT_SUCCESS);
+}
+
+bool	IrcServer::isNickInUse(std::string nick)
+{
+	std::map<int, SocketTcpClient *>::iterator	cr;
+
+	for (cr = this->clients.begin(); cr != clients.end(); cr++)
+	{
+		if (static_cast<IrcClient *>(cr->second)->getNick() == nick)
+			return (true);
+	}
+	return (false);
 }
 
 int		IrcServer::connect(std::string const &port)

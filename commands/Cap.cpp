@@ -6,14 +6,15 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 23:09:50 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:05:01 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "commands/Cap.hpp"
 
-void	Cap::handle(IrcMessage &msg)
+void	Cap::handle(IrcServer &server, IrcMessage &msg)
 {
 	(void)msg;
+	(void)server;
 	// ignored
 }

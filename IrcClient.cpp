@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 23:33:08 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:14:54 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,31 +23,24 @@ enum
 	RPL_MYINFO = 4
 };
 
-		IrcClient::IrcClient(): SocketTcpClient(),
-								registered(false),
-								hasGivenPassword(false),
-								nick(""),
-								username(""),
-								realname("")
+IrcClient::IrcClient(void): registered(false),
+							hasGivenPassword(false)
 {
 }
 
-		IrcClient::IrcClient(SocketTcpClient *client): SocketTcpClient(client->getFd()),
-													   registered(false),
-													   hasGivenPassword(false),
-													   nick(""),
-													   username(""),
-													   realname("")
+IrcClient::IrcClient(int socketConnected): SocketTcpClient(socketConnected),
+										   registered(false),
+										   hasGivenPassword(false)
 {
 }
 
-		IrcClient::~IrcClient()
+IrcClient::~IrcClient(void)
 {
 }
 
 bool	IrcClient::isRegistered(void) const
 {
-	return (registered);
+	return (this->registered);
 }
 
 void	IrcClient::sendRpl(int rpl, std::string msg) const
@@ -62,7 +55,7 @@ void	IrcClient::sendRpl(int rpl, std::string msg) const
 
 void	IrcClient::hasRegistered(void)
 {
-	registered = true;
+	this->registered = true;
 	this->sendRpl(RPL_WELCOME,
 		"Welcome to " + config.prefix + ", " + this->nick + "!");
 	this->sendRpl(RPL_YOURHOST,
@@ -75,7 +68,7 @@ void	IrcClient::hasRegistered(void)
 
 bool	IrcClient::getHasGivenPassword(void) const
 {
-	return (hasGivenPassword);
+	return (this->hasGivenPassword);
 }
 
 void	IrcClient::setHasGivenPassword(void)

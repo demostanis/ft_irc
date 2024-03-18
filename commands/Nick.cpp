@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 22:35:40 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:05:16 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ static bool	isValid(std::string nick)
 	return (true);
 }
 
-void	Nick::handle(IrcMessage &msg)
+void	Nick::handle(IrcServer &server, IrcMessage &msg)
 {
-	IrcClient	*client	= msg.getClient();
+	IrcClient *client	= msg.getClient();
 
 	if (!client->getHasGivenPassword())
 	{
@@ -51,7 +51,7 @@ void	Nick::handle(IrcMessage &msg)
 		}
 		if (nick == client->getNick())
 			return ;
-		if (ClientManager::isNickInUse(nick))
+		if (server.isNickInUse(nick))
 			msg.replyError(ERR_NICKNAMEINUSE, nick + " :Nickname already in use");
 		else
 			client->setNick(nick);

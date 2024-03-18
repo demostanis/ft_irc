@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 23:09:31 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:08:16 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "commands/User.hpp"
 #include "commands/Cap.hpp"
 
-typedef void	(*command)(IrcMessage&);
+typedef void	(*command)(IrcServer &, IrcMessage &);
 
 static command		commandHandlers[] = {
 	&Nick::handle,
@@ -78,7 +78,7 @@ static void	commandNotFound(std::string command, IrcMessage &msg)
 	msg.replyError(ERR_UNKNOWNCOMMAND, command + " :Unknown command");
 }
 
-static void	handleCommand(IrcMessage &msg)
+static void	handleCommand(IrcServer &server, IrcMessage &msg)
 {
 	bool		found;
 	std::string	command;
@@ -90,7 +90,7 @@ static void	handleCommand(IrcMessage &msg)
 	{
 		if (commandNames[i] == toUppercase(command))
 		{
-			commandHandlers[i](msg);
+			commandHandlers[i](server, msg);
 			found = true;
 		}
 	}
@@ -100,10 +100,8 @@ static void	handleCommand(IrcMessage &msg)
 
 static int	listenForConnections(void)
 {
-	BNFFind::const_iterator	cr;
-	IrcMessage				msg;
 	IrcServer				server;
-	std::string				command;
+	IrcMessage				msg;
 	
 	if (!server.isConnected())
 	{
@@ -118,7 +116,7 @@ static int	listenForConnections(void)
 			continue ;
 		}
 		if (msg.getCommand().size() > 0)
-			handleCommand(msg);
+			handleCommand(server, msg);
 	}
 	return (0);
 }

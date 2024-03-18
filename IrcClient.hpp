@@ -6,13 +6,13 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 23:24:16 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/17 23:54:57 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "SocketTcpClient.hpp"
+#include "kdolib/kdolib.hpp"
 
 class IrcClient: public SocketTcpClient
 {
@@ -24,13 +24,12 @@ private:
 	std::string			realname;
 
 public:
-			IrcClient();
-			IrcClient(SocketTcpClient *client);
-			~IrcClient();
-
+						IrcClient(void);
+						IrcClient(int socketConnected);
+						~IrcClient(void);
 	bool				isRegistered(void) const;
 	void				sendRpl(int rpl, std::string msg) const;
-	void				hasRegistered();
+	void				hasRegistered(void);
 	void				setHasGivenPassword(void);
 	bool				getHasGivenPassword(void) const;
 	void				setNick(const std::string &nick);

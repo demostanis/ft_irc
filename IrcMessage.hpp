@@ -6,19 +6,16 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/16 23:03:54 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 00:47:55 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <vector>
-#include "BNF/BNF.hpp"
-#include "SocketTcpClient.hpp"
 #include "IrcClient.hpp"
 #include "kdolib/kdolib.hpp"
 
-#define PARSE_ERROR -1
+#define CRLF "\r\n"
 
 enum EIrcMessageError
 {
@@ -51,13 +48,12 @@ class IrcMessage
 		BNFFind			command;
 		BNFFind			params;	
 		IrcMessageError	error;
-		int				clientFd;
+		IrcClient		*client;
 
 	public:
-							IrcMessage(void);
-							IrcMessage(std::string const &msg, int clientFd);
+							IrcMessage(IrcClient *client = NULL);
+							IrcMessage(std::string const &msg, IrcClient *client);
 							IrcMessage(IrcMessage const &other);
-							IrcMessage(int clientFd);
 							~IrcMessage(void);
 		IrcMessageError		parse(std::string const &msg, size_t start = 0);
 		IrcMessageError		getError(void) const;
@@ -65,7 +61,8 @@ class IrcMessage
 		BNFFind const		&getCommand(void) const;
 		BNFFind const		&getParams(void) const;
 		IrcClient			*getClient(void) const;
-		void				reply(std::string reply) const;
-		void				replyError(int code, std::string reply) const;
+		void				setClient(IrcClient *client);
+		ssize_t				reply(std::string const &reply) const;
+		ssize_t				replyError(int code, std::string const &reply) const;
 		IrcMessage			&operator=(IrcMessage const &other);
 };

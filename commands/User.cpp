@@ -6,16 +6,17 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/16 23:07:58 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/18 01:05:53 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "commands/User.hpp"
 
-void	User::handle(IrcMessage &msg)
+void	User::handle(IrcServer &server, IrcMessage &msg)
 {
 	IrcClient	*client	= msg.getClient();
 
+	(void)server;
 	if (!client->getHasGivenPassword())
 	{
 		msg.replyError(ERR_PASSWDMISMATCH, ":You haven't provided a password with PASS");
