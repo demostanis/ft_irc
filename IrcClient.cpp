@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 17:16:15 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:28:12 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@ enum
 	RPL_WELCOME = 1,
 	RPL_YOURHOST = 2,
 	RPL_CREATED = 3,
-	RPL_MYINFO = 4
+	RPL_MYINFO = 4,
+	RPL_ISUPPORT = 5
 };
 
 IrcClient::IrcClient(Config &config):	config(config),
@@ -49,10 +50,10 @@ void	IrcClient::sendRpl(int rpl, std::string msg) const
 	code.insert(code.begin(), 3 - code.size(), '0');
 	this->send(
 		":" + this->config["source"] + " " + code
-		+ " " + this->getNick() + " " + msg + "\r\n");
+		+ " " + this->getNick() + " " + msg + "\r\n", MSG_DONTWAIT);
 }
 
-void	IrcClient::hasRegistered(void)
+void	IrcClient::hasRegistered(IrcServer &server)
 {
 	this->registered = true;
 	this->sendRpl(RPL_WELCOME,
@@ -62,7 +63,14 @@ void	IrcClient::hasRegistered(void)
 	this->sendRpl(RPL_CREATED,
 		"This server was created on 1st January 1970");
 	this->sendRpl(RPL_MYINFO,
-		this->config["source"] + " 0.42.69  itkol");
+		this->config["source"] + " 0.42.69 i itkol");
+	this->sendRpl(RPL_ISUPPORT, std::string("CASEMAPPING=ascii CHANMODES=itkol")
+		+ " CHANLIMIT=#:" + this->config["chanlimit"]
+		+ " CHANNELLEN=" + this->config["channellen"]
+		+ " NETWORK=" + this->config["source"]
+		+ " NICKLEN=" + this->config["nicklen"]);
+	Lusers::doIt(server, this);
+	Motd::doIt(this);
 }
 
 bool	IrcClient::getHasGivenPassword(void) const
@@ -83,6 +91,16 @@ void	IrcClient::setNick(const std::string &nick)
 const std::string	&IrcClient::getNick() const
 {
 	return (this->nick);
+}
+
+const std::string	&IrcClient::getUsername() const
+{
+	return (this->username);
+}
+
+const std::string	&IrcClient::getRealname() const
+{
+	return (this->realname);
 }
 
 void				IrcClient::setIdentity(const std::string &username, const std::string &realname)

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/19 19:15:28 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 21:18:25 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ void				IrcMessage::setClient(IrcClient *client)
 
 ssize_t				IrcMessage::reply(std::string const &reply) const
 {
-	return (this->client->send(":" + this->client->getConfig()["source"] + " " + reply + CRLF));
+	return (this->client->send(":" + this->client->getConfig()["source"] + " " + reply + CRLF), MSG_DONTWAIT);
 }
 
 ssize_t				IrcMessage::replyError(int code, std::string const &reply) const

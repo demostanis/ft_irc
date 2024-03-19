@@ -14,6 +14,9 @@ SRC 		= commands/Cap.cpp\
 			  commands/Nick.cpp\
 			  commands/Pass.cpp\
 			  commands/User.cpp\
+			  commands/Ping.cpp\
+			  commands/Lusers.cpp\
+			  commands/Motd.cpp\
 			  Config.cpp\
 			  IrcClient.cpp\
 			  IrcMessage.cpp\

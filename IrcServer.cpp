@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/19 17:24:55 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:07:37 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int				IrcServer::accept(IrcClient *&client)
     return (EXIT_SUCCESS);
 }
 
-int				IrcServer::reveiveMessage(int clientSocket)
+int				IrcServer::receiveMessage(int clientSocket)
 {
 	IrcClient		*client;
 	std::string		str;
@@ -91,7 +91,7 @@ int				IrcServer::getNextMessage(IrcMessage &msg)
 				if (events[i].data.fd == this->getFd())
 					this->connectClient();
 				else
-					this->reveiveMessage(events[i].data.fd);
+					this->receiveMessage(events[i].data.fd);
 			}
 		}
 	}
@@ -144,10 +144,15 @@ bool			IrcServer::isNickInUse(std::string nick)
 
 	for (cr = this->clients.begin(); cr != clients.end(); cr++)
 	{
-		if (static_cast<IrcClient *>(cr->second)->getNick() == nick)
+		if (kdo::iequals(static_cast<IrcClient *>(cr->second)->getNick(), nick))
 			return (true);
 	}
 	return (false);
+}
+
+int				IrcServer::userCount(void)
+{
+	return (std::distance(this->clients.begin(), this->clients.end()));
 }
 
 int				IrcServer::connect(std::string const &filename)

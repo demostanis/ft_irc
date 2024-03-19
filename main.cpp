@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 18:50:57 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:27:43 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,18 @@ static command		commandHandlers[] = {
 	&Pass::handle,
 	&User::handle,
 	&Cap::handle,
+	&Ping::handle,
+	&Lusers::handle,
+	&Motd::handle,
 };
 static std::string	commandNames[] = {
 	"NICK",
 	"PASS",
 	"USER",
 	"CAP",
+	"PING",
+	"LUSERS",
+	"MOTD",
 };
 
 static void	commandNotFound(std::string command, IrcMessage &msg)

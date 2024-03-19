@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 16:22:24 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 22:21:46 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static bool	isAllowedCharacter(char c)
 {
-	return (c == '[' || c == ']' || c == '{' || c == '}'
+	return (c == '[' || c == ']' || c == '{' || c == '}' || c == '_'
 			|| c == '\\' || c == '|' || (c >= 'a' && c <= 'z')
 			|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
 }
@@ -55,5 +55,7 @@ void	Nick::handle(IrcServer &server, IrcMessage &msg)
 			msg.replyError(ERR_NICKNAMEINUSE, nick + " :Nickname already in use");
 		else
 			client->setNick(nick);
+		if (!client->getUsername().empty())
+			client->hasRegistered(server);
 	}
 }

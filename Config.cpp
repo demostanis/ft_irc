@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:06:23 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 18:41:57 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 21:42:07 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ char const	*Config::mandatoryKeys[] = {
 	"admin",
 	"password",
 	"source",
+	"chanlimit",
+	"channellen",
+	"source",
+	"nicklen",
 	NULL
 };
 
