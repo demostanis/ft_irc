@@ -6,20 +6,17 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/18 01:38:59 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 19:15:28 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcMessage.hpp"
-#include "Config.hpp"
 
-extern Config	config;
-
-BNFVar	getMessageParser(void)
+static BNFVar	_messageParser(void)
 {
 	BNFChar		SPACE("SPACE", ' ');
 	BNFChar		zero("zero", '0');
-	BNFChar		client_prefix("client_prefix", '+');
+	BNFChar		client_source("client_source", '+');
 	BNFStr		crlf("crlf", CRLF);
 	BNFRange	digit("digit", '0', '9');
 	BNFVar		letter("letter", BNFRange('a', 'z') | BNFRange('A', 'Z'));
@@ -42,20 +39,20 @@ BNFVar	getMessageParser(void)
 	BNFVar		host("host", hostname | hostaddr);
 	BNFVar		servername("servername", hostname);
 	BNFVar		vendor("vendor", host);
-	BNFVar		key("key", !(client_prefix) & !(vendor & '/') & (letter | digit) - 0);
+	BNFVar		key("key", !(client_source) & !(vendor & '/') & (letter | digit) - 0);
 	BNFVar		tag("tag", key & !('=' & escaped_value));
 	BNFVar		tags("tags", tag & (';' & tag) - 0);
 	BNFVar		source("source", servername | (nickname & !('!' & user) & !('@' & host)));
 	BNFVar		command("command", letter - 1 | digit % 3);
 	BNFVar		middle("middle", nospcrlfcl & (':' | nospcrlfcl) - 0);
-	BNFVar		trailing("trailing", (':' | ' ' | nospcrlfcl) - 0);
+	BNFVar		trailing("trailing", (':' | SPACE | nospcrlfcl) - 0);
 	BNFVar		parameters("parameters", (SPACE & middle) - 0 & !(SPACE & ':' & trailing));
 	BNFVar		message("message", !('@' & tags & SPACE) & !(':' & source & SPACE) & command & !parameters & crlf);
 
 	return (message);
 }
 
-BNFVar	IrcMessage::parser(getMessageParser());
+BNFVar	IrcMessage::parser(_messageParser());
 
 
 IrcMessage::IrcMessage(IrcClient *client):	error(IRC_MESSAGE_NO_ERROR),
@@ -69,7 +66,7 @@ IrcMessage::IrcMessage(std::string const &msg, IrcClient *client):	error(IRC_MES
 	this->parse(msg);
 }
 
-IrcMessage::IrcMessage(IrcMessage const &other):	prefix(other.prefix),
+IrcMessage::IrcMessage(IrcMessage const &other):	source(other.source),
 													command(other.command),
 													params(other.params),
 													error(other.error),
@@ -86,17 +83,17 @@ IrcMessageError		IrcMessage::parse(std::string const &msg, size_t start)
 	this->error = IRC_MESSAGE_NO_ERROR;
 	if (IrcMessage::parser.parse(msg, start) == BNF_PARSE_ERROR)
 		this->error |= IRC_MESSAGE_ERROR;
-	this->prefix = IrcMessage::parser["prefix"];
-	if (this->prefix.size() && (this->prefix)[0].getErrorPos() != BNF_ERROR_POS_NONE)
-		this->error |= IRC_PREFIX_ERROR;
-	this->command = IrcMessage::parser["command"];
-	if (this->command.size() && (this->command)[0].getErrorPos() != BNF_ERROR_POS_NONE)
+	this->source = IrcMessage::parser.find("source", 5);
+	if (this->source.size() && (this->source)[0].getErrorLen() != BNF_ERROR_LEN_NONE)
+		this->error |= IRC_SOURCE_ERROR;
+	this->command = IrcMessage::parser.find("command", 3);
+	if (this->command.size() && (this->command)[0].getErrorLen() != BNF_ERROR_LEN_NONE)
 		this->error |= IRC_COMMAND_ERROR;
-	this->params = IrcMessage::parser["parameters"];
-	if (this->params.size() && (this->params)[0].getErrorPos() != BNF_ERROR_POS_NONE)
+	this->params = IrcMessage::parser.find("parameters", 3);
+	if (this->params.size() && (this->params)[0].getErrorLen() != BNF_ERROR_LEN_NONE)
 		this->error |= IRC_PARAMS_ERROR;
-	this->params = IrcMessage::parser["middle"];
-	this->params.merge(IrcMessage::parser["trailing"]);
+	this->params = IrcMessage::parser.find("middle", 8);
+	this->params.merge(IrcMessage::parser.find("trailing", 8));
 	return (this->error);
 }
 
@@ -107,7 +104,7 @@ IrcMessageError		IrcMessage::getError(void) const
 
 BNFFind const		&IrcMessage::getPrefix(void) const
 {
-	return (this->prefix);
+	return (this->source);
 }
 
 BNFFind const		&IrcMessage::getCommand(void) const
@@ -132,7 +129,7 @@ void				IrcMessage::setClient(IrcClient *client)
 
 ssize_t				IrcMessage::reply(std::string const &reply) const
 {
-	return (this->client->send(":" + config.prefix + " " + reply + CRLF));
+	return (this->client->send(":" + this->client->getConfig()["source"] + " " + reply + CRLF));
 }
 
 ssize_t				IrcMessage::replyError(int code, std::string const &reply) const
@@ -142,7 +139,7 @@ ssize_t				IrcMessage::replyError(int code, std::string const &reply) const
 
 IrcMessage			&IrcMessage::operator=(IrcMessage const &other)
 {
-	this->prefix = other.prefix;
+	this->source = other.source;
 	this->command = other.command;
 	this->params = other.params;
 	this->error = other.error;

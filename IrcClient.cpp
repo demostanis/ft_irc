@@ -6,14 +6,11 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:36:36 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 17:16:15 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcClient.hpp"
-#include "Config.hpp"
-
-extern Config	config;
 
 enum
 {
@@ -23,14 +20,16 @@ enum
 	RPL_MYINFO = 4
 };
 
-IrcClient::IrcClient(void): registered(false),
-							hasGivenPassword(false)
+IrcClient::IrcClient(Config &config):	config(config),
+										registered(false),
+										hasGivenPassword(false)
 {
 }
 
-IrcClient::IrcClient(int socketConnected): SocketTcpClient(socketConnected),
-										   registered(false),
-										   hasGivenPassword(false)
+IrcClient::IrcClient(Config &config, int socketConnected):	SocketTcpClient(socketConnected),
+															config(config),
+															registered(false),
+															hasGivenPassword(false)
 {
 }
 
@@ -49,7 +48,7 @@ void	IrcClient::sendRpl(int rpl, std::string msg) const
 
 	code.insert(code.begin(), 3 - code.size(), '0');
 	this->send(
-		":" + config.prefix + " " + code
+		":" + this->config["source"] + " " + code
 		+ " " + this->getNick() + " " + msg + "\r\n");
 }
 
@@ -57,13 +56,13 @@ void	IrcClient::hasRegistered(void)
 {
 	this->registered = true;
 	this->sendRpl(RPL_WELCOME,
-		"Welcome to " + config.prefix + ", " + this->nick + "!");
+		"Welcome to " + this->config["source"] + ", " + this->nick + "!");
 	this->sendRpl(RPL_YOURHOST,
-		"Your host is " + config.prefix + ", running version 0.42.69");
+		"Your host is " + this->config["source"] + ", running version 0.42.69");
 	this->sendRpl(RPL_CREATED,
 		"This server was created on 1st January 1970");
 	this->sendRpl(RPL_MYINFO,
-		config.prefix + " 0.42.69  itkol");
+		this->config["source"] + " 0.42.69  itkol");
 }
 
 bool	IrcClient::getHasGivenPassword(void) const
@@ -90,4 +89,9 @@ void				IrcClient::setIdentity(const std::string &username, const std::string &r
 {
 	this->username = username;
 	this->realname = realname;
+}
+
+Config				&IrcClient::getConfig(void)
+{
+	return (this->config);
 }

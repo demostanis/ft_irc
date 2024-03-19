@@ -6,59 +6,23 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:52:02 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:36:08 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 18:41:24 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <map>
-#include "Exceptions.hpp"
+#include "irc.hpp"
 
-static const std::string	allowedKeys[] = {
-	"admin",
-	"prefix",
-	"password",
-};
-
-class	Config
+class	Config: public std::map<std::string, std::string>
 {
 	private:
-		typedef std::map<std::string, std::string>	kvT;
-		kvT											kv;
+		static char const	*mandatoryKeys[];
+		static BNFVar		kvParser;
 
 	public:
-		Config();
-		~Config();
-
-		DEFINE_EXCEPTION(Parse);
-		DEFINE_EXCEPTION(Missing);
-
-		template <typename T>
-		std::pair<bool, T>	get(std::string key) const
-		{
-			kvT::const_iterator	elem;
-			T					ret;
-			bool				found;
-
-			found = false;
-			if ((elem = kv.find(key)) != kv.end())
-			{
-				std::istringstream	ss(elem->second);
-				ss >> ret;
-				found = !ss.fail();
-			}
-			return (std::make_pair(found, ret));
-		}
-
-		void	read(std::string filename) throw(ParseError);
-		void	parse(void) throw (MissingError);
-
-		// J'aime pas les getters moi
-		std::string	admin;
-		std::string	prefix;
-		std::string	password;
+				Config(void);
+				Config(std::string const &filename);
+		void	read(std::string const &filename);
+		bool	contains(std::string const &key);
 };

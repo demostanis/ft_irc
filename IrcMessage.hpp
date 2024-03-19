@@ -6,14 +6,13 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/18 01:42:04 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:12:22 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IrcClient.hpp"
-#include "kdolib/kdolib.hpp"
+#include "irc.hpp"
 
 #define CRLF "\r\n"
 
@@ -21,7 +20,7 @@ enum EIrcMessageError
 {
 	IRC_MESSAGE_NO_ERROR	= 0,
 	IRC_MESSAGE_ERROR		= 1 << 0,
-	IRC_PREFIX_ERROR		= 1 << 1, 
+	IRC_SOURCE_ERROR		= 1 << 1, 
 	IRC_COMMAND_ERROR		= 1 << 2,
 	IRC_PARAMS_ERROR		= 1 << 3
 };
@@ -40,11 +39,13 @@ enum ReplyError
 
 typedef uint8_t	IrcMessageError;
 
+class IrcClient;
+
 class IrcMessage
 {
 	private:
 		static BNFVar	parser;
-		BNFFind			prefix;
+		BNFFind			source;
 		BNFFind			command;
 		BNFFind			params;	
 		IrcMessageError	error;

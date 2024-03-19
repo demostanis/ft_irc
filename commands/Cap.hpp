@@ -6,14 +6,13 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:35:48 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:40:13 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:21:24 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IrcMessage.hpp"
-#include "IrcServer.hpp"
+#include "../irc.hpp"
 
 class Cap
 {

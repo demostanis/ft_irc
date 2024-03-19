@@ -6,14 +6,13 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:11:19 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:40:25 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:21:37 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "IrcMessage.hpp"
-#include "IrcServer.hpp"
+#include "../irc.hpp"
 
 class Nick
 {

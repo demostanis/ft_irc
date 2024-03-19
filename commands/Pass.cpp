@@ -6,13 +6,11 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:40:28 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:37:49 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "commands/Pass.hpp"
-
-extern Config	config;
+#include "Pass.hpp"
 
 void	Pass::handle(IrcServer &server, IrcMessage &msg)
 {
@@ -25,7 +23,7 @@ void	Pass::handle(IrcServer &server, IrcMessage &msg)
 		IrcClient	*client	= msg.getClient();
 
 		// TODO: should be argv[1] instead of config.password
-		if (password == config.password)
+		if (password == server.getConfig()["password"])
 		{
 			if (client)
 			{

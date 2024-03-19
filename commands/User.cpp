@@ -6,11 +6,11 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/18 01:40:38 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:22:34 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "commands/User.hpp"
+#include "User.hpp"
 
 void	User::handle(IrcServer &server, IrcMessage &msg)
 {

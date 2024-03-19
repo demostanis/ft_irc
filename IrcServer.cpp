@@ -6,15 +6,16 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/18 01:42:24 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 17:24:55 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "irc.hpp"
 #include "IrcServer.hpp"
 
-IrcServer::IrcServer(std::string const &port):	epoll(INVALID_FD)
+IrcServer::IrcServer(std::string const &filename):	epoll(INVALID_FD)
 {
-	this->connect(port);
+	this->connect(filename);
 }
 
 IrcServer::~IrcServer(void)
@@ -22,7 +23,7 @@ IrcServer::~IrcServer(void)
 	this->disconnect();
 }
 
-int     IrcServer::accept(IrcClient *&client)
+int				IrcServer::accept(IrcClient *&client)
 {
 	struct sockaddr_storage clientAddr;
     socklen_t               addrSize;
@@ -32,12 +33,12 @@ int     IrcServer::accept(IrcClient *&client)
     clientSocket = ::accept(this->fd, (struct sockaddr *)&clientAddr, &addrSize);
     if (clientSocket == INVALID_FD)
         return (EXIT_ERRNO);
-    this->clients[clientSocket] = new IrcClient(clientSocket);
+    this->clients[clientSocket] = new IrcClient(this->config, clientSocket);
     client = static_cast<IrcClient *>(this->clients[clientSocket]);
     return (EXIT_SUCCESS);
 }
 
-int	IrcServer::reveiveMessage(int clientSocket)
+int				IrcServer::reveiveMessage(int clientSocket)
 {
 	IrcClient		*client;
 	std::string		str;
@@ -65,14 +66,14 @@ int	IrcServer::reveiveMessage(int clientSocket)
 	return (EXIT_SUCCESS);
 }
 
-int		IrcServer::getNextMessage(IrcMessage &msg)
+int				IrcServer::getNextMessage(IrcMessage &msg)
 {
-	struct epoll_event	events[IRC_SERVER_BACKLOG];
+	struct epoll_event	events[this->backlog];
 	int					readyFd;
 
 	while (this->msgQueue.empty())
 	{
-		readyFd = epoll_wait(this->epoll, events, IRC_SERVER_BACKLOG, -1);
+		readyFd = epoll_wait(this->epoll, events, this->backlog, -1);
 		for (int i(0); i < readyFd; i++)
 		{
 			if (events[i].events & (EPOLLRDHUP | EPOLLHUP))
@@ -99,7 +100,7 @@ int		IrcServer::getNextMessage(IrcMessage &msg)
 	return (EXIT_SUCCESS);
 }
 
-int		IrcServer::connectClient(void)
+int				IrcServer::connectClient(void)
 {
 	IrcClient		 	*newClient;
 	struct epoll_event	event = {};
@@ -126,7 +127,7 @@ int		IrcServer::disconnectClient(int clientSocket)
 	return (epoll_ctl(this->epoll, EPOLL_CTL_DEL, clientSocket, NULL));
 }
 
-int     IrcServer::getClient(IrcClient *&client, int clientSocket)
+int				IrcServer::getClient(IrcClient *&client, int clientSocket)
 {
 	std::map<int, SocketTcpClient *>::iterator  cr;
 
@@ -137,7 +138,7 @@ int     IrcServer::getClient(IrcClient *&client, int clientSocket)
     return (EXIT_SUCCESS);
 }
 
-bool	IrcServer::isNickInUse(std::string nick)
+bool			IrcServer::isNickInUse(std::string nick)
 {
 	std::map<int, SocketTcpClient *>::iterator	cr;
 
@@ -149,12 +150,38 @@ bool	IrcServer::isNickInUse(std::string nick)
 	return (false);
 }
 
-int		IrcServer::connect(std::string const &port)
+int				IrcServer::connect(std::string const &filename)
 {
+	std::string			port = IRC_SERVER_DEFAULT_PORT;
+	int					backlog = IRC_SERVER_DEFAULT_BACKLOG;
 	struct epoll_event  event = {};
 	int					error;
 
-	error = this->SocketTcpServer::connect(port, IRC_SERVER_BACKLOG);
+	try
+	{
+		this->config.read(filename);
+	}
+	catch (std::invalid_argument const &e)
+	{
+		std::cerr << IRC_NAME << ": " << e.what() << std::endl;
+		return (EXIT_FAILURE);
+	}
+	catch (std::runtime_error const &e)
+	{
+		std::cerr << IRC_NAME << ": parse error: " << e.what() << std::endl;
+		return (EXIT_FAILURE);
+	}
+	if (this->config.contains("port"))
+		port = this->config["port"];
+	if (this->config.contains("backlog"))
+	{
+		if (!kdo::allConverted(kdo::convert(backlog, this->config["backlog"])))
+		{
+			std::cerr << IRC_NAME << ": " << this->config["backlog"] << ": invalid backlog" << std::endl;
+			return (EXIT_FAILURE);
+		}
+	}
+	error = this->SocketTcpServer::connect(port, backlog);
 	if (error)
 	{
 		if (error != EXIT_ERRNO)
@@ -181,9 +208,14 @@ int		IrcServer::connect(std::string const &port)
 	return (EXIT_SUCCESS);
 }
 
-void	IrcServer::disconnect(void)
+void			IrcServer::disconnect(void)
 {
 	this->SocketTcpServer::disconnect();
 	if (this->epoll != INVALID_FD)
 		::close(this->epoll);
+}
+
+Config			&IrcServer::getConfig(void)
+{
+	return (this->config);
 }

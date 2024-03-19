@@ -6,39 +6,40 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/18 01:20:19 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/19 16:30:33 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <queue>
-#include <iomanip>
-#include <sys/epoll.h>
-#include "IrcMessage.hpp"
-#include "IrcClient.hpp"
-#include "kdolib/kdolib.hpp"
+#include "irc.hpp"
 
-#define IRC_SERVER_BACKLOG		128
-#define IRC_SERVER_DEFAUT_PORT	"ircd"
+#define IRC_SERVER_DEFAULT_BACKLOG	128
+#define IRC_SERVER_DEFAULT_PORT		"ircd"
+
+class Config;
+class IrcMessage;
+class IrcClient;
 
 class IrcServer: public SocketTcpServer
 {
 	private:
 		std::map<int, std::string>  lineBuf;
 		std::queue<IrcMessage>		msgQueue;
+		Config						config;
 		int							epoll;
 
 	public:
-				IrcServer(std::string const &port = IRC_SERVER_DEFAUT_PORT);
-				~IrcServer(void);
-		int     accept(IrcClient *&client);
-		int		reveiveMessage(int clientSocket);
-		int		getNextMessage(IrcMessage &msg);
-		int		connectClient(void);
-		int		disconnectClient(int clientSocket);
-		int     getClient(IrcClient *&client, int clientSocket);
-		bool	isNickInUse(std::string nick);
-		int		connect(std::string const &port = IRC_SERVER_DEFAUT_PORT);
-		void	disconnect(void);
+						IrcServer(std::string const &filename);
+						~IrcServer(void);
+		int     		accept(IrcClient *&client);
+		int				reveiveMessage(int clientSocket);
+		int				getNextMessage(IrcMessage &msg);
+		int				connectClient(void);
+		int				disconnectClient(int clientSocket);
+		int     		getClient(IrcClient *&client, int clientSocket);
+		bool			isNickInUse(std::string nick);
+		int				connect(std::string const &filename);
+		void			disconnect(void);
+		Config			&getConfig(void);
 };
