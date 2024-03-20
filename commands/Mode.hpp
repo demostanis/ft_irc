@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Ping.cpp                                           :+:      :+:    :+:   */
+/*   Mode.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 18:11:36 by cgodard          ###   ########.fr       */
+/*   Created: 2024/03/16 22:35:48 by cgodard           #+#    #+#             */
+/*   Updated: 2024/03/20 22:35:57 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Ping.hpp"
+#pragma once
 
-void	Ping::handle(IrcServer &server, IrcMessage &msg)
+#include "irc.hpp"
+
+#define RPL_UMODEIS 221
+
+class Mode
 {
-	if (msg.getParams().size() == 0)
-		msg.replyError(ERR_NEEDMOREPARAMS, "PING :Not enough parameters");
-	else
-		msg.reply("PONG " + server.getConfig()["source"] + " :" + msg.getParams()[0].getValue());
-}
+	public:
+		static void	handle(IrcServer &server, IrcMessage &msg);
+};

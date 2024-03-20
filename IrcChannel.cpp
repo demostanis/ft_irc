@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 03:30:22 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 22:50:54 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ void				IrcChannel::setName(std::string newName)
 const std::string	&IrcChannel::getTopic(void) const
 {
 	return (topic);
+}
+
+const std::string	&IrcChannel::getModes(void) const
+{
+	return (modes);
 }
 
 void				IrcChannel::setTopic(std::string newTopic)

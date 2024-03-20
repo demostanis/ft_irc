@@ -6,7 +6,7 @@
 /*   By: nlaerema <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:00:46 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/20 03:41:31 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 22:51:42 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,6 @@
 #include "commands/Lusers.hpp"
 #include "commands/Motd.hpp"
 #include "commands/Join.hpp"
+#include "commands/Mode.hpp"
 
 #define IRC_NAME "ircserv"

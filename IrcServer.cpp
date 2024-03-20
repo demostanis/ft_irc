@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/20 03:32:14 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 22:49:44 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,6 +226,16 @@ void			IrcServer::disconnect(void)
 	this->SocketTcpServer::disconnect();
 	if (this->epoll != INVALID_FD)
 		::close(this->epoll);
+}
+
+bool	IrcServer::channelExists(std::string name)
+{
+	return (channels.find(name) != channels.end());
+}
+
+IrcChannel		*IrcServer::getChannel(std::string name)
+{
+	return (&channels[name]);
 }
 
 IrcChannel		*IrcServer::createChannelIfNeeded(std::string name)
