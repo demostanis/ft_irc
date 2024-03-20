@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 22:28:12 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 03:11:01 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ void	IrcClient::hasRegistered(IrcServer &server)
 	this->sendRpl(RPL_CREATED,
 		"This server was created on 1st January 1970");
 	this->sendRpl(RPL_MYINFO,
-		this->config["source"] + " 0.42.69 i itkol");
-	this->sendRpl(RPL_ISUPPORT, std::string("CASEMAPPING=ascii CHANMODES=itkol")
+		this->config["source"] + " 0.42.69 o itkol");
+	this->sendRpl(RPL_ISUPPORT, std::string("CASEMAPPING=ascii CHANMODES=itkol USERMODES=o")
 		+ " CHANLIMIT=#:" + this->config["chanlimit"]
 		+ " CHANNELLEN=" + this->config["channellen"]
 		+ " NETWORK=" + this->config["source"]

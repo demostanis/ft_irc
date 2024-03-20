@@ -17,10 +17,12 @@ SRC 		= commands/Cap.cpp\
 			  commands/Ping.cpp\
 			  commands/Lusers.cpp\
 			  commands/Motd.cpp\
+			  commands/Join.cpp\
 			  Config.cpp\
 			  IrcClient.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\
+			  IrcChannel.cpp\
 			  main.cpp
 
 OBJ 		= $(SRC:.cpp=.o)

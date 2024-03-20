@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 22:23:56 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/19 23:51:50 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,12 @@ void	Lusers::handle(IrcServer &server, IrcMessage &msg)
 	IrcClient		*client = msg.getClient();
 
 	if (client)
+	{
+		if (!client->isRegistered())
+		{
+			msg.replyError(ERR_NOTREGISTERED, ":You have not registered");
+			return ;
+		}
 		Lusers::doIt(server, client);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/19 16:12:22 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/03/20 00:13:55 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ enum ReplyError
 	ERR_NOTREGISTERED = 451,
 	ERR_NICKNAMEINUSE = 433,
 	ERR_NONICKNAMEGIVEN = 431,
-	ERR_ERRONEOUSNICKAME = 432
+	ERR_ERRONEOUSNICKAME = 432,
+	ERR_BADCHANNAME = 479,
 };
 
 typedef uint8_t	IrcMessageError;

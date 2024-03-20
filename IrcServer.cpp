@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/19 22:07:37 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 03:32:14 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,6 @@ int				IrcServer::userCount(void)
 int				IrcServer::connect(std::string const &filename)
 {
 	std::string			port = IRC_SERVER_DEFAULT_PORT;
-	int					backlog = IRC_SERVER_DEFAULT_BACKLOG;
 	struct epoll_event  event = {};
 	int					error;
 
@@ -178,14 +177,23 @@ int				IrcServer::connect(std::string const &filename)
 	}
 	if (this->config.contains("port"))
 		port = this->config["port"];
-	if (this->config.contains("backlog"))
-	{
-		if (!kdo::allConverted(kdo::convert(backlog, this->config["backlog"])))
-		{
-			std::cerr << IRC_NAME << ": " << this->config["backlog"] << ": invalid backlog" << std::endl;
-			return (EXIT_FAILURE);
-		}
+
+	// I know you hate macros but it's so much shorter
+#define CHECK_INT(name, defaultValue) \
+	int name = defaultValue; \
+	if (this->config.contains(#name)) \
+	{ \
+		if (!kdo::allConverted(kdo::convert(name, this->config[#name]))) \
+		{ \
+			std::cerr << IRC_NAME << ": " << this->config[#name] << ": invalid "#name << std::endl; \
+			return (EXIT_FAILURE); \
+		} \
 	}
+	CHECK_INT(backlog, IRC_SERVER_DEFAULT_BACKLOG);
+	CHECK_INT(chanlimit, 0);
+	CHECK_INT(channellen, 0);
+	CHECK_INT(nicklen, 0);
+
 	error = this->SocketTcpServer::connect(port, backlog);
 	if (error)
 	{
@@ -218,6 +226,13 @@ void			IrcServer::disconnect(void)
 	this->SocketTcpServer::disconnect();
 	if (this->epoll != INVALID_FD)
 		::close(this->epoll);
+}
+
+IrcChannel		*IrcServer::createChannelIfNeeded(std::string name)
+{
+	if (channels.find(name) == channels.end())
+		channels[name].setName(name);
+	return (&channels[name]);
 }
 
 Config			&IrcServer::getConfig(void)
