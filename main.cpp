@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 22:51:52 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/21 01:20:40 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ static command		commandHandlers[] = {
 	&Motd::handle,
 	&Join::handle,
 	&Mode::handle,
+	&Privmsg::handle,
+	&Quit::handle,
 };
 static std::string	commandNames[] = {
 	"NICK",
@@ -35,6 +37,8 @@ static std::string	commandNames[] = {
 	"MOTD",
 	"JOIN",
 	"MODE",
+	"PRIVMSG",
+	"QUIT",
 };
 
 static void	commandNotFound(std::string command, IrcMessage &msg)

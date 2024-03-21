@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 03:40:44 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/21 01:32:58 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ void	Join::handle(IrcServer &server, IrcMessage &msg)
 	}
 	channel = server.createChannelIfNeeded(channelName);
 	channel->add(client);
+	client->addChannel(channel);
 	// such an odd packet
 	client->send(
 		":" + client->getNick() +

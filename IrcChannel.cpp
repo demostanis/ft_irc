@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 22:50:54 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/21 01:31:39 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,19 @@ void				IrcChannel::setTopic(std::string newTopic)
 void				IrcChannel::add(IrcClient *user)
 {
 	clients.push_back(user);
+}
+
+void				IrcChannel::send(IrcClient *client, std::string text)
+{
+	std::vector<IrcClient *>::const_iterator	cr = this->getClients().begin();
+
+	for (; cr != this->getClients().end(); cr++)
+	{
+		if (*cr != client)
+		{
+			(*cr)->send(":"
+				+ client->getNick() + " PRIVMSG " + name
+				+ " :" + text + CRLF, MSG_DONTWAIT);
+		}
+	}
 }

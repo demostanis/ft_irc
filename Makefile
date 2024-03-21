@@ -19,6 +19,8 @@ SRC 		= commands/Cap.cpp\
 			  commands/Motd.cpp\
 			  commands/Join.cpp\
 			  commands/Mode.cpp\
+			  commands/Privmsg.cpp\
+			  commands/Quit.cpp\
 			  Config.cpp\
 			  IrcClient.cpp\
 			  IrcMessage.cpp\

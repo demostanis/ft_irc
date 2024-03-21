@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:30:22 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/20 22:50:41 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/20 23:36:02 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ public:
 	const std::string				&getTopic(void) const;
 	const std::string				&getModes(void) const;
 	void							setTopic(std::string name);
+	void							send(IrcClient *client, std::string text);
 
 	static bool				isValidName(std::string name);
 };
