@@ -6,13 +6,13 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/21 02:10:09 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/22 02:20:08 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Quit.hpp"
 
-void	Quit::doIt(IrcClient *client, std::string reason)
+void	Quit::doIt(IrcServer &server, IrcClient *client, std::string reason)
 {
 	std::map<std::string, IrcChannel*>::const_iterator	channels;
 	std::vector<IrcClient *>::const_iterator			clients;
@@ -27,8 +27,8 @@ void	Quit::doIt(IrcClient *client, std::string reason)
 			(*clients)->send(":" + client->getNick() +
 				" QUIT :" + reason + CRLF, MSG_DONTWAIT);
 	}
-	// TODO: this doesnt work?
-	client->disconnect();
+	// TODO: client->disconnect()
+	server.disconnectClient(client->getFd());
 }
 
 void	Quit::handle(IrcServer &server, IrcMessage &msg)
@@ -41,6 +41,6 @@ void	Quit::handle(IrcServer &server, IrcMessage &msg)
 	{
 		if (msg.getParams().size() > 0)
 			reason = msg.getParams()[0].getValue();
-		Quit::doIt(client, reason);
+		Quit::doIt(server, client, reason);
 	}
 }
