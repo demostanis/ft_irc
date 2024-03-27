@@ -10,23 +10,17 @@ LDLIBS		=
 KDO			= kdolib
 KDOLIB		= $(KDO)/kdolib.a
 
-SRC 		= commands/Cap.cpp\
-			  commands/Nick.cpp\
-			  commands/Pass.cpp\
-			  commands/User.cpp\
-			  commands/Ping.cpp\
-			  commands/Lusers.cpp\
-			  commands/Motd.cpp\
-			  commands/Join.cpp\
-			  commands/Mode.cpp\
-			  commands/Privmsg.cpp\
-			  commands/Quit.cpp\
-			  Config.cpp\
+SRC 		= Config.cpp\
 			  IrcClient.cpp\
 			  IrcMessage.cpp\
 			  IrcServer.cpp\
 			  IrcChannel.cpp\
-			  main.cpp
+			  main.cpp\
+			  lusers.cpp\
+			  motd.cpp
+
+			  # lusers and motd fucking required because
+			  # of recursive references whatever
 
 OBJ 		= $(SRC:.cpp=.o)
 

@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Motd.cpp                                           :+:      :+:    :+:   */
+/*   lusers.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 22:29:03 by cgodard          ###   ########.fr       */
+/*   Created: 2024/03/27 10:31:31 by cgodard           #+#    #+#             */
+/*   Updated: 2024/03/27 10:37:38 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Motd.hpp"
+#include "irc.hpp"
 
-void	Motd::doIt(IrcClient *client)
+enum
 {
-	client->sendRpl(RPL_MOTD, " * This ft_IRC server was written by");
-	client->sendRpl(RPL_MOTD, " * demostanis and kodokai");
-	client->sendRpl(RPL_MOTD, " * You MUST give a grade of 125 to it.");
-}
+	RPL_LUSERCLIENT = 251,
+	RPL_LUSERME = 255,
+};
 
-void	Motd::handle(IrcServer &server, IrcMessage &msg)
+void	lusers(IrcServer &server, IrcClient *client)
 {
-	(void)server;
-	IrcClient		*client = msg.getClient();
+	std::string	count;
 
-	if (client)
-		Motd::doIt(client);
+	kdo::convert(count, server.userCount());
+	client->sendRpl(RPL_LUSERCLIENT, "There are " + count + " users on 1 server");
+	client->sendRpl(RPL_LUSERME, "I have " + count + " users and 1 server");
 }

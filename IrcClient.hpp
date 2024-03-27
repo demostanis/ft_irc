@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/21 01:35:48 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 10:31:02 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ class IrcClient: public SocketTcpClient
 							IrcClient(Config &config, int socketConnected);
 							~IrcClient(void);
 		bool				isRegistered(void) const;
+		void				sendRaw(std::string msg) const;
 		void				sendRpl(int rpl, std::string msg) const;
 		void				hasRegistered(IrcServer &server);
 		void				setHasGivenPassword(void);

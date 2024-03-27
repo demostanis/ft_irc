@@ -5,18 +5,38 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/15 17:11:19 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/22 02:20:19 by cgodard          ###   ########.fr       */
+/*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
+/*   Updated: 2024/03/27 10:11:09 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "../irc.hpp"
+#include "commands.hpp"
 
-class Quit
+namespace Quit
 {
-	public:
-		static void	handle(IrcServer &server, IrcMessage &msg);
-		static void	doIt(IrcServer &server, IrcClient *client, std::string reason);
-};
+	void	doIt(IrcServer &server, IrcClient *client, std::string reason)
+	{
+		ITER_CLIENT_CHANNELS(client)
+		{
+			ITER_CHANNEL_CLIENTS(*CHANNEL())
+			{
+				if (CLIENT() != client)
+					CLIENT()->sendRaw(":" + client->getNick() +
+						" QUIT :" + reason);
+			}
+		}
+		// TODO: client->disconnect()
+		server.disconnectClient(client->getFd());
+	}
+}
+
+DEFINE_CMD(Quit, {
+	IrcClient		*client = msg.getClient();
+	std::string		reason;
+
+	if (N_PARAMS() > 0)
+		reason = PARAM(0);
+	Quit::doIt(server, client, reason);
+})
