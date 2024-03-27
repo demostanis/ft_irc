@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/22 02:20:08 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 08:24:49 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,11 @@ void	Quit::doIt(IrcServer &server, IrcClient *client, std::string reason)
 		channel = channels->second;
 		clients = channel->getClients().begin();
 		for (; clients != channel->getClients().end(); ++clients)
-			(*clients)->send(":" + client->getNick() +
-				" QUIT :" + reason + CRLF, MSG_DONTWAIT);
+		{
+			if (*clients != client)
+				(*clients)->sendRaw(":" + client->getNick() +
+					" QUIT :" + reason);
+		}
 	}
 	// TODO: client->disconnect()
 	server.disconnectClient(client->getFd());

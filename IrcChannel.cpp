@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/21 01:31:39 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 08:24:30 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ void				IrcChannel::send(IrcClient *client, std::string text)
 	{
 		if (*cr != client)
 		{
-			(*cr)->send(":"
+			(*cr)->sendRaw(":"
 				+ client->getNick() + " PRIVMSG " + name
-				+ " :" + text + CRLF, MSG_DONTWAIT);
+				+ " :" + text);
 		}
 	}
 }

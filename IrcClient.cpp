@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/21 01:35:53 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 08:22:54 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,19 @@ bool	IrcClient::isRegistered(void) const
 	return (this->registered);
 }
 
+void	IrcClient::sendRaw(std::string msg) const
+{
+	this->send(msg + CRLF, MSG_DONTWAIT);
+}
+
 void	IrcClient::sendRpl(int rpl, std::string msg) const
 {
 	std::string	code = kdo::itoa(rpl);
 
 	code.insert(code.begin(), 3 - code.size(), '0');
-	this->send(
+	this->sendRaw(
 		":" + this->config["source"] + " " + code
-		+ " " + this->getNick() + " " + msg + "\r\n", MSG_DONTWAIT);
+		+ " " + this->getNick() + " " + msg);
 }
 
 void	IrcClient::hasRegistered(IrcServer &server)

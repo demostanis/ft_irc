@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/21 01:32:58 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 08:25:36 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,17 @@ void	Join::handle(IrcServer &server, IrcMessage &msg)
 	channel = server.createChannelIfNeeded(channelName);
 	channel->add(client);
 	client->addChannel(channel);
-	// such an odd packet
-	client->send(
-		":" + client->getNick() +
-		" JOIN " + channelName + CRLF
-		, MSG_DONTWAIT);
+
+	std::map<std::string, IrcChannel*>::const_iterator	channels;
+	std::vector<IrcClient *>::const_iterator			clients;
+
+	clients = channel->getClients().begin();
+	for (; clients != channel->getClients().end(); ++clients)
+	{
+		(*clients)->sendRaw(":" + client->getNick() +
+			" JOIN " + channelName);
+	}
+
 	if (!channel->getTopic().empty())
 		client->sendRpl(RPL_TOPIC, channelName + " :" + channel->getTopic());
 	sendNames(client, *channel);
