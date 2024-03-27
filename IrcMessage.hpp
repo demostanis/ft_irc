@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/20 23:34:34 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:45:47 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ enum ReplyError
 	ERR_NORECIPIENT = 411,
 	ERR_NOTEXTTOSEND = 412,
 	ERR_NOSUCHNICK = 401,
-	ERR_TOOMANYTARGETS = 407
+	ERR_TOOMANYTARGETS = 407,
+	ERR_CANNOTSENDTOCHAN = 404,
+	ERR_NOTONCHANNEL = 442,
 };
 
 typedef uint8_t	IrcMessageError;

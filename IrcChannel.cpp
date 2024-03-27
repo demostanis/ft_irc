@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 08:24:30 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:47:22 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,11 @@ void				IrcChannel::setTopic(std::string newTopic)
 void				IrcChannel::add(IrcClient *user)
 {
 	clients.push_back(user);
+}
+
+void				IrcChannel::remove(IrcClient *user)
+{
+	clients.erase(std::find(clients.begin(), clients.end(), user));
 }
 
 void				IrcChannel::send(IrcClient *client, std::string text)

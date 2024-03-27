@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:31:02 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:30:19 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,5 @@ class IrcClient: public SocketTcpClient
 
 		const std::map<std::string, IrcChannel*>	&getChannels() const;
 		void									addChannel(IrcChannel *channel);
+		bool									isInChannel(IrcChannel *channel);
 };

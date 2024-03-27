@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:53:24 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:11:43 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,3 +81,4 @@ enum
 #include "Privmsg.hpp"
 #include "Quit.hpp"
 #include "User.hpp"
+#include "Part.hpp"

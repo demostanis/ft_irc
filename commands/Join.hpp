@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:10:23 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:44:45 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ static void	sendNames(IrcClient *client, IrcChannel &channel)
 DEFINE_CMD(Join, {
 	ENSURE_AUTH();
 
-	IrcClient	*client	= msg.getClient();
 	std::string	channelName;
 	IrcChannel	*channel;
 
@@ -43,6 +42,7 @@ DEFINE_CMD(Join, {
 		return ;
 	}
 
+	// TODO: handle many
 	channelName = PARAM(0);
 	if (!IrcChannel::isValidName(channelName))
 	{

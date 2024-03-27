@@ -49,7 +49,7 @@ fclean: clean
 clear: fclean
 	$(RM) -r $(KDO)
 
-re: fclean all
+re: fclean fast
 
 fast: fclean
 	$(MAKE) -j$$(nproc)

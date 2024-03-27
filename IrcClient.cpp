@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:32:24 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 11:30:35 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,4 +132,15 @@ const std::map<std::string, IrcChannel*>	&IrcClient::getChannels() const
 void	IrcClient::addChannel(IrcChannel *channel)
 {
 	this->channels[channel->getName()] = channel;
+}
+
+bool	IrcClient::isInChannel(IrcChannel *channel)
+{
+	std::vector<IrcClient *>::const_iterator	clients;
+
+	clients = channel->getClients().begin();
+	for (; clients != channel->getClients().end(); ++clients)
+		if (*clients == this)
+			return (true);
+	return (false);
 }
