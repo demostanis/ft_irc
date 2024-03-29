@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:06:23 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/19 21:42:07 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:39:54 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static BNFVar	_kvParser(void)
 }
 
 char const	*Config::mandatoryKeys[] = {
-	"admin",
 	"password",
 	"source",
 	"chanlimit",

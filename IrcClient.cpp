@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 12:25:45 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:27:08 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,21 @@ const std::string	&IrcClient::getNick() const
 const std::string	&IrcClient::getModes() const
 {
 	return (this->modes);
+}
+
+void				IrcClient::addMode(char mode)
+{
+	if (this->modes.find(mode) == std::string::npos)
+		this->modes += mode;
+}
+
+void				IrcClient::delMode(char mode)
+{
+	size_t	pos;
+
+	pos = this->modes.find(mode);
+	if (pos != std::string::npos)
+		this->modes.erase(pos, 1);
 }
 
 const std::string	&IrcClient::getUsername() const

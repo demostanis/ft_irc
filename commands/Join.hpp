@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 19:57:01 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:03:12 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ static void	sendNames(IrcClient *client, IrcChannel &channel)
 
 	ITER_CHANNEL_CLIENTS(channel)
 	{
-		// TODO: add @ if op
-		usernames += "@" + CLIENT()->getNick();
+		if (CLIENT()->getModes().find('o') != std::string::npos)
+			usernames += "@";
+		usernames += CLIENT()->getNick();
 		if (clients != channel.getClients().end() - 1)
 			usernames += " ";
 	}

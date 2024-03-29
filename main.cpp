@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 14:47:16 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:39:46 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ static command		commandHandlers[] = {
 	&Nick::handle,
 	&Pass::handle,
 	&User::handle,
-	&Cap::handle,
+	&Noop::handle,
+	&Noop::handle,
 	&Ping::handle,
 	&Lusers::handle,
 	&Motd::handle,
@@ -37,6 +38,7 @@ static std::string	commandNames[] = {
 	"PASS",
 	"USER",
 	"CAP",
+	"WHO",
 	"PING",
 	"LUSERS",
 	"MOTD",
@@ -87,7 +89,6 @@ static int	listenForConnections(std::string const &filename)
 	}
 	std::cout << "Welcome to ircserv!" << std::endl;
 	std::cout << "  Source: " << server.getConfig()["source"] << std::endl;
-	std::cout << "  Admin: " << server.getConfig()["admin"] << std::endl;
 	while (1)
 	{
 		if (server.getNextMessage(msg))

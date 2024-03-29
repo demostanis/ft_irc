@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:10:25 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:37:15 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,18 @@ DEFINE_CMD(Mode, {
 		return ;
 	}
 
-	IrcClient	*client = msg.getClient();
-
-	// TODO: handle setting modes
 	std::string	param = PARAM(0);
 	if (param[0] == '#')
 	{
 		if (server.channelExists(param))
-			client->sendRpl(RPL_UMODEIS, "+" +
-				server.getChannel(param)->getModes());
+		{
+			if (N_PARAMS() == 1)
+				client->sendRpl(RPL_UMODEIS, "+" +
+					server.getChannel(param)->getModes());
+			else
+			{
+			}
+		}
 		else
 			msg.replyError(ERR_NOSUCHCHANNEL, ":No such channel");
 	}
@@ -44,5 +47,15 @@ DEFINE_CMD(Mode, {
 		}
 		if (N_PARAMS() == 1)
 			client->sendRpl(RPL_UMODEIS, "+" + client->getModes());
+		else
+		{
+			if (PARAM(1).find('o') != std::string::npos)
+			{
+				if (PARAM(1)[0] == '+')
+					client->addMode('o');
+				else if (PARAM(1)[0] == '-')
+					client->delMode('o');
+			}
+		}
 	}
 })

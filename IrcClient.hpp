@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 12:26:02 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:29:55 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ class IrcClient: public SocketTcpClient
 		const std::string	&getIdentifier() const;
 		const std::string	&getNick() const;
 		const std::string	&getModes() const;
+		void				delMode(char mode);
+		void				addMode(char mode);
 		Config				&getConfig(void);
 
 		const std::map<std::string, IrcChannel*>	&getChannels() const;
