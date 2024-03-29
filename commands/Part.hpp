@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 11:11:49 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 12:05:09 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 12:25:31 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@ DEFINE_CMD(Part, {
 
 		ITER_CHANNEL_CLIENTS(*channel)
 		{
-			CLIENT()->sendRaw(":" + client->getNick() +
-				"!~" + client->getNick() + "@127.0.0.1 PART " + channelName + " :" + reason);
+			CLIENT()->sendRaw(":" + client->getIdentifier() +
+				" PART " + channelName + " :" + reason);
 		}
+		client->removeChannel(channel);
 		channel->remove(client);
 	}
 	else

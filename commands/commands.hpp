@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 11:11:43 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 14:46:36 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,15 @@
 		return ;                                                           \
 	}
 
+#define ENSURE_OP() \
+	IrcClient       *___client = msg.getClient();                                   \
+	if (!___client || ___client->getModes().find('o') == std::string::npos)          \
+	{                                                                              \
+		msg.replyError(ERR_CHANOPRIVSNEEDED,                                       \
+			":You're not a channel operator");                                     \
+		return ;                                                                   \
+	}                                                                              \
+
 enum
 {
 	RPL_TOPIC = 332,
@@ -67,7 +76,8 @@ enum
 	RPL_LUSERCLIENT = 251,
 	RPL_LUSERME = 255,
 	RPL_UMODEIS = 221,
-	RPL_MOTD = 372
+	RPL_MOTD = 372,
+	RPL_INVITING = 341,
 };
 
 #include "Cap.hpp"
@@ -82,3 +92,6 @@ enum
 #include "Quit.hpp"
 #include "User.hpp"
 #include "Part.hpp"
+#include "Invite.hpp"
+#include "Topic.hpp"
+#include "Kick.hpp"

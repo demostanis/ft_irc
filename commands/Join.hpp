@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 11:44:45 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 19:57:01 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ static void	sendNames(IrcClient *client, IrcChannel &channel)
 DEFINE_CMD(Join, {
 	ENSURE_AUTH();
 
-	std::string	channelName;
-	IrcChannel	*channel;
+	std::string					channelNamesRaw;
+	std::vector<std::string>	channelNames;
+	IrcChannel					*channel;
 
 	if (N_PARAMS() < 1)
 	{
@@ -42,24 +43,34 @@ DEFINE_CMD(Join, {
 		return ;
 	}
 
-	// TODO: handle many
-	channelName = PARAM(0);
-	if (!IrcChannel::isValidName(channelName))
-	{
-		msg.replyError(ERR_BADCHANNAME, ":Illegal channel name");
-		return ;
-	}
-	channel = server.createChannelIfNeeded(channelName);
-	client->addChannel(channel);
-	channel->add(client);
+	channelNamesRaw = PARAM(0);
+	channelNames = kdo::splitlist(channelNamesRaw);
 
-	ITER_CHANNEL_CLIENTS(*channel)
+	std::vector<std::string>::iterator	channelName = channelNames.begin();
+	for (; channelName != channelNames.end(); channelName++)
 	{
-		CLIENT()->sendRaw(":" + client->getNick() +
-			" JOIN " + channelName);
+		if (!IrcChannel::isValidName(*channelName))
+		{
+			msg.replyError(ERR_BADCHANNAME, ":Illegal channel name");
+			return ;
+		}
 	}
+	
+	channelName = channelNames.begin();
+	for (; channelName != channelNames.end(); channelName++)
+	{
+		channel = server.createChannelIfNeeded(*channelName);
+		client->addChannel(channel);
+		channel->add(client);
 
-	if (!channel->getTopic().empty())
-		client->sendRpl(RPL_TOPIC, channelName + " :" + channel->getTopic());
-	sendNames(client, *channel);
+		ITER_CHANNEL_CLIENTS(*channel)
+		{
+			CLIENT()->sendRaw(":" + client->getIdentifier() +
+				" JOIN " + *channelName);
+		}
+
+		if (!channel->getTopic().empty())
+			client->sendRpl(RPL_TOPIC, *channelName + " :" + channel->getTopic());
+		sendNames(client, *channel);
+	}
 })

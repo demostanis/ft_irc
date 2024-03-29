@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 11:30:35 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 12:25:45 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ void	IrcClient::sendRpl(int rpl, std::string msg) const
 
 void	IrcClient::hasRegistered(IrcServer &server)
 {
+	// TODO: get real IP
+	this->identifier = nick + "!~" + nick + "@127.0.0.1";
+
 	this->registered = true;
 	this->sendRpl(RPL_WELCOME,
 		"Welcome to " + this->config["source"] + ", " + this->nick + "!");
@@ -113,6 +116,11 @@ const std::string	&IrcClient::getRealname() const
 	return (this->realname);
 }
 
+const std::string	&IrcClient::getIdentifier() const
+{
+	return (this->identifier);
+}
+
 void				IrcClient::setIdentity(const std::string &username, const std::string &realname)
 {
 	this->username = username;
@@ -132,6 +140,11 @@ const std::map<std::string, IrcChannel*>	&IrcClient::getChannels() const
 void	IrcClient::addChannel(IrcChannel *channel)
 {
 	this->channels[channel->getName()] = channel;
+}
+
+void	IrcClient::removeChannel(IrcChannel *channel)
+{
+	this->channels[channel->getName()] = NULL;
 }
 
 bool	IrcClient::isInChannel(IrcChannel *channel)

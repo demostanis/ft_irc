@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/27 11:45:47 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 14:37:02 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ enum ReplyError
 	ERR_TOOMANYTARGETS = 407,
 	ERR_CANNOTSENDTOCHAN = 404,
 	ERR_NOTONCHANNEL = 442,
+	ERR_USERONCHANNEL = 443,
+	ERR_USERNOTINCHANNEL = 441,
+	ERR_CHANOPRIVSNEEDED = 482,
 };
 
 typedef uint8_t	IrcMessageError;

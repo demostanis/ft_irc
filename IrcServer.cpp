@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/20 22:49:44 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/27 13:00:30 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,18 @@ bool			IrcServer::isNickInUse(std::string nick)
 			return (true);
 	}
 	return (false);
+}
+
+IrcClient		*IrcServer::getClientByNick(std::string nick)
+{
+	std::map<int, SocketTcpClient *>::iterator	cr;
+
+	for (cr = this->clients.begin(); cr != clients.end(); cr++)
+	{
+		if (kdo::iequals(static_cast<IrcClient *>(cr->second)->getNick(), nick))
+			return (static_cast<IrcClient *>(cr->second));
+	}
+	return (NULL);
 }
 
 int				IrcServer::userCount(void)
