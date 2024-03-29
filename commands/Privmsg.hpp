@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 11:29:09 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:11:09 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,29 @@ DEFINE_CMD(Privmsg, {
 	std::vector<std::string>::iterator	cr = targets.begin();
 	for (; cr != targets.end(); ++cr)
 	{
-		IrcChannel	*channel = server.getChannel(*cr);
-		if (!client->isInChannel(channel))
+		if ((*cr)[0] == '#')
 		{
-			msg.replyError(ERR_CANNOTSENDTOCHAN, ":Cannot send to channel");
-			return ;
+			IrcChannel	*channel = server.getChannel(*cr);
+			if (!client->isInChannel(channel))
+			{
+				msg.replyError(ERR_CANNOTSENDTOCHAN, ":Cannot send to channel");
+				return ;
+			}
+			if (channel)
+				channel->send(client, PARAM(1));
+			else
+				msg.replyError(ERR_NOSUCHNICK, ":No such nick/channel");
 		}
-		if (channel)
-			channel->send(client, PARAM(1));
 		else
-			// TODO support users
-			msg.replyError(ERR_NOSUCHNICK, ":No such nick/channel");
+		{
+			IrcClient	*targetClient = server.getClientByNick(*cr);
+			if (targetClient == client || targetClient == NULL)
+			{
+				msg.replyError(ERR_NOSUCHNICK, ":No such nick/channel");
+				return ;
+			}
+			targetClient->sendRaw(":" + client->getIdentifier() + " PRIVMSG " +
+				*cr + " :" + PARAM(1));
+		}
 	}
 })
