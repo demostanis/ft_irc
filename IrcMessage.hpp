@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/27 14:37:02 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:46:55 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ enum ReplyError
 	ERR_USERONCHANNEL = 443,
 	ERR_USERNOTINCHANNEL = 441,
 	ERR_CHANOPRIVSNEEDED = 482,
+	ERR_UMODEUNKNOWNFLAG = 501,
 };
 
 typedef uint8_t	IrcMessageError;

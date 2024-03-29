@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 20:38:26 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 20:50:24 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ enum
 	RPL_UMODEIS = 221,
 	RPL_MOTD = 372,
 	RPL_INVITING = 341,
+	RPL_CHANNELMODEIS = 324,
 };
 
 #include "Noop.hpp"

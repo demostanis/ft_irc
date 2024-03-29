@@ -6,14 +6,18 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 12:24:00 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 21:42:42 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "IrcChannel.hpp"
 
+#define DEFAULT_CLIENT_LIMIT 50
+
 IrcChannel::IrcChannel()
 {
+	modes = 't';
+	clientLimit = DEFAULT_CLIENT_LIMIT;
 }
 
 IrcChannel::~IrcChannel()
@@ -60,6 +64,51 @@ const std::string	&IrcChannel::getModes(void) const
 void				IrcChannel::setTopic(std::string newTopic)
 {
 	topic = newTopic;
+}
+
+void				IrcChannel::setInviteOnly(bool newInviteOnly)
+{
+	inviteOnly = newInviteOnly;
+}
+
+bool				IrcChannel::getInviteOnly() const
+{
+	return (inviteOnly);
+}
+
+void				IrcChannel::setTopicForOpsOnly(bool newTopicForOpsOnly)
+{
+	topicForOpsOnly = newTopicForOpsOnly;
+}
+
+void				IrcChannel::delMode(char mode)
+{
+	if (this->modes.find(mode) == std::string::npos)
+		this->modes += mode;
+}
+
+void				IrcChannel::addMode(char mode)
+{
+	size_t	pos;
+
+	pos = this->modes.find(mode);
+	if (pos != std::string::npos)
+		this->modes.erase(pos, 1);
+}
+
+bool				IrcChannel::getTopicForOpsOnly() const
+{
+	return (topicForOpsOnly);
+}
+
+void				IrcChannel::setPassword(std::string newPassword)
+{
+	this->password = newPassword;
+}
+
+void				IrcChannel::setClientLimit(int n)
+{
+	this->clientLimit = n;
 }
 
 void				IrcChannel::add(IrcClient *user)

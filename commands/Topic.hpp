@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 13:34:32 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 14:38:21 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 21:00:20 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 DEFINE_CMD(Topic, {
 	ENSURE_AUTH();
-	ENSURE_OP();
 
 	if (N_PARAMS() < 2)
 	{
@@ -34,6 +33,13 @@ DEFINE_CMD(Topic, {
 	if (!client->isInChannel(channel))
 	{
 		msg.replyError(ERR_NOTONCHANNEL, ":You're not on that channel");
+		return ;
+	}
+
+	if (channel->getTopicForOpsOnly() &&
+		client->getModes().find('o') == std::string::npos)
+	{
+		msg.replyError(ERR_CHANOPRIVSNEEDED, ":You're not a channel operator");
 		return ;
 	}
 
