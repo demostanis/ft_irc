@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 20:03:12 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:21:11 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,14 @@ DEFINE_CMD(Join, {
 	channelNamesRaw = PARAM(0);
 	channelNames = kdo::splitlist(channelNamesRaw);
 
+	unsigned int	chanlimit;
+	kdo::convert(chanlimit, server.getConfig()["chanlimit"]);
+	if (client->getChannels().size() + channelNames.size() >= chanlimit)
+	{
+		msg.replyError(ERR_TOOMANYCHANNELS, ":Too many channels");
+		return ;
+	}
+
 	std::vector<std::string>::iterator	channelName = channelNames.begin();
 	for (; channelName != channelNames.end(); channelName++)
 	{
@@ -61,17 +69,24 @@ DEFINE_CMD(Join, {
 	for (; channelName != channelNames.end(); channelName++)
 	{
 		channel = server.createChannelIfNeeded(*channelName);
-		client->addChannel(channel);
-		channel->add(client);
-
-		ITER_CHANNEL_CLIENTS(*channel)
+		if ((int)(channel->getClients().size() + 1) >= channel->getClientLimit())
 		{
-			CLIENT()->sendRaw(":" + client->getIdentifier() +
-				" JOIN " + *channelName);
+			msg.replyError(ERR_CHANNELISFULL, ":Cannot join channel (+l)");
 		}
+		else
+		{
+			client->addChannel(channel);
+			channel->add(client);
 
-		if (!channel->getTopic().empty())
-			client->sendRpl(RPL_TOPIC, *channelName + " :" + channel->getTopic());
-		sendNames(client, *channel);
+			ITER_CHANNEL_CLIENTS(*channel)
+			{
+				CLIENT()->sendRaw(":" + client->getIdentifier() +
+					" JOIN " + *channelName);
+			}
+
+			if (!channel->getTopic().empty())
+				client->sendRpl(RPL_TOPIC, *channelName + " :" + channel->getTopic());
+			sendNames(client, *channel);
+		}
 	}
 })

@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 21:42:42 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:20:57 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,11 @@ void				IrcChannel::setPassword(std::string newPassword)
 void				IrcChannel::setClientLimit(int n)
 {
 	this->clientLimit = n;
+}
+
+int					IrcChannel::getClientLimit() const
+{
+	return (this->clientLimit);
 }
 
 void				IrcChannel::add(IrcClient *user)
