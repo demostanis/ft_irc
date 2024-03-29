@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:30:22 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:20:36 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:21:52 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ private:
 	std::string					topic;
 	std::string					modes;
 	bool						topicForOpsOnly;
-	// TODO: handle
-	bool						inviteOnly;
+	std::vector<IrcClient *>	invitations;
+	bool						invitationOnly;
 	std::string					password;
 	int							clientLimit;
 
@@ -46,11 +46,17 @@ public:
 	bool							getTopicForOpsOnly() const;
 	void							setTopicForOpsOnly(bool newTopicForOpsOnly);
 	void							setPassword(std::string password);
+	const std::string				&getPassword(void) const;
 	void							setClientLimit(int n);
 	int								getClientLimit() const;
 	void							delMode(char mode);
 	void							addMode(char mode);
 	void							send(IrcClient *client, std::string text);
 
-	static bool				isValidName(std::string name);
+	bool							isInvitationOnly(void) const;
+	void							addInvitation(IrcClient *client);
+	void							wasInvited(IrcClient *client);
+	bool							isInvited(IrcClient *client);
+
+	static bool				isValidName(std::string name, unsigned int);
 };

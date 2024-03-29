@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:20:57 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:22:12 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,10 @@ const std::vector<IrcClient *>	&IrcChannel::getClients(void) const
 	return (clients);
 }
 
-bool				IrcChannel::isValidName(std::string name)
+bool				IrcChannel::isValidName(std::string name, unsigned int channellen)
 {
+	if (name.length() > channellen)
+		return (false);
 	if (name.length() < 2)
 		return (false);
 	if (name[0] != '#')
@@ -68,12 +70,12 @@ void				IrcChannel::setTopic(std::string newTopic)
 
 void				IrcChannel::setInviteOnly(bool newInviteOnly)
 {
-	inviteOnly = newInviteOnly;
+	invitationOnly = newInviteOnly;
 }
 
 bool				IrcChannel::getInviteOnly() const
 {
-	return (inviteOnly);
+	return (invitationOnly);
 }
 
 void				IrcChannel::setTopicForOpsOnly(bool newTopicForOpsOnly)
@@ -116,6 +118,11 @@ int					IrcChannel::getClientLimit() const
 	return (this->clientLimit);
 }
 
+const std::string	&IrcChannel::getPassword(void) const
+{
+	return (this->password);
+}
+
 void				IrcChannel::add(IrcClient *user)
 {
 	clients.push_back(user);
@@ -124,6 +131,27 @@ void				IrcChannel::add(IrcClient *user)
 void				IrcChannel::remove(IrcClient *user)
 {
 	clients.erase(std::find(clients.begin(), clients.end(), user));
+}
+
+bool				IrcChannel::isInvitationOnly(void) const
+{
+	return (invitationOnly);
+}
+
+void				IrcChannel::addInvitation(IrcClient *client)
+{
+	invitations.push_back(client);
+}
+
+void				IrcChannel::wasInvited(IrcClient *client)
+{
+	invitations.erase(std::find(invitations.begin(), invitations.end(), client));
+}
+
+bool				IrcChannel::isInvited(IrcClient *client)
+{
+	return (std::find(invitations.begin(), invitations.end(), client) !=
+		invitations.end());
 }
 
 void				IrcChannel::send(IrcClient *client, std::string text)

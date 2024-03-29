@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 12:35:35 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 14:37:52 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:27:14 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 DEFINE_CMD(Invite, {
 	ENSURE_AUTH();
 	ENSURE_OP();
-
-	// TODO: actually give permission to join to user
 
 	if (N_PARAMS() != 2)
 	{
@@ -60,4 +58,5 @@ DEFINE_CMD(Invite, {
 	invitedClient->sendRaw(
 		":" + client->getIdentifier() + " INVITE "
 		+ invitee + " " + channelName);
+	channel->addInvitation(invitedClient);
 })

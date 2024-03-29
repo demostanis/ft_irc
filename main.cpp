@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 20:39:46 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:27:14 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static command		commandHandlers[] = {
 	&Nick::handle,
 	&Pass::handle,
 	&User::handle,
+	&Noop::handle,
 	&Noop::handle,
 	&Noop::handle,
 	&Ping::handle,
@@ -39,6 +40,7 @@ static std::string	commandNames[] = {
 	"USER",
 	"CAP",
 	"WHO",
+	"WHOIS",
 	"PING",
 	"LUSERS",
 	"MOTD",

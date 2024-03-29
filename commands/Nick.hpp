@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 10:46:03 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:46:26 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@ static bool	isAllowedCharacter(char c)
 			|| (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
 }
 
-static bool	isValid(std::string nick)
+static bool	isValid(std::string nick, unsigned int nicklen)
 {
 	std::string::const_iterator	it;
 
+	if (nick.length() > nicklen)
+		return (false);
 	for (it = nick.begin(); it != nick.end(); it++)
 		if (!isAllowedCharacter(*it))
 			return (false);
@@ -32,13 +34,16 @@ static bool	isValid(std::string nick)
 }
 
 DEFINE_CMD(Nick, {
+	unsigned int	nicklen;
+	kdo::convert(nicklen, server.getConfig()["nicklen"]);
+
 	if (N_PARAMS() == 0)
 		msg.replyError(ERR_NONICKNAMEGIVEN, ":No nickname given");
 	else
 	{
 		std::string	nick = PARAM(0);
 
-		if (!isValid(nick))
+		if (!isValid(nick, nicklen))
 		{
 			msg.replyError(ERR_ERRONEOUSNICKAME, nick + " :Erroneous nickname");
 			return ;

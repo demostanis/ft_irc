@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/29 22:18:48 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:20:49 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ enum ReplyError
 	ERR_UMODEUNKNOWNFLAG = 501,
 	ERR_CHANNELISFULL = 471,
 	ERR_TOOMANYCHANNELS = 405,
+	ERR_BADCHANNELKEY = 475,
+	ERR_INVITEONLYCHAN = 473,
 };
 
 typedef uint8_t	IrcMessageError;

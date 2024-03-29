@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 21:34:03 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 22:47:34 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,8 @@ void	IrcClient::hasRegistered(IrcServer &server)
 		this->config["source"] + " 0.42.69 o itkol");
 	this->sendRpl(RPL_ISUPPORT, std::string("CASEMAPPING=ascii CHANMODES=itkol USERMODES=o")
 		+ " CHANLIMIT=#:" + this->config["chanlimit"]
-		// TODO: check
 		+ " CHANNELLEN=" + this->config["channellen"]
 		+ " NETWORK=" + this->config["source"]
-		// TODO: check
 		+ " NICKLEN=" + this->config["nicklen"]);
 	lusers(server, this);
 	motd(this);

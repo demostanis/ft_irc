@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 21:51:34 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:04:45 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ namespace Quit
 				ITER_CHANNEL_CLIENTS(*CHANNEL())
 				{
 					if (CLIENT() != client)
-						CLIENT()->sendRaw(":" + client->getNick() +
+						CLIENT()->sendRaw(":" + client->getIdentifier() +
 							" QUIT :" + reason);
 				}
 			}

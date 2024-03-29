@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:21:11 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/29 23:20:41 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ DEFINE_CMD(Join, {
 
 	std::string					channelNamesRaw;
 	std::vector<std::string>	channelNames;
+	std::vector<std::string>	channelPasswords;
 	IrcChannel					*channel;
 
 	if (N_PARAMS() < 1)
@@ -46,6 +47,8 @@ DEFINE_CMD(Join, {
 
 	channelNamesRaw = PARAM(0);
 	channelNames = kdo::splitlist(channelNamesRaw);
+	if (N_PARAMS() >= 2)
+		channelPasswords = kdo::splitlist(PARAM(1));
 
 	unsigned int	chanlimit;
 	kdo::convert(chanlimit, server.getConfig()["chanlimit"]);
@@ -55,12 +58,15 @@ DEFINE_CMD(Join, {
 		return ;
 	}
 
+	unsigned int	channellen;
+	kdo::convert(channellen, server.getConfig()["channellen"]);
+
 	std::vector<std::string>::iterator	channelName = channelNames.begin();
 	for (; channelName != channelNames.end(); channelName++)
 	{
-		if (!IrcChannel::isValidName(*channelName))
+		if (!IrcChannel::isValidName(*channelName, channellen))
 		{
-			msg.replyError(ERR_BADCHANNAME, ":Illegal channel name");
+			msg.replyError(ERR_BADCHANNAME, *channelName + " :Illegal channel name");
 			return ;
 		}
 	}
@@ -69,24 +75,44 @@ DEFINE_CMD(Join, {
 	for (; channelName != channelNames.end(); channelName++)
 	{
 		channel = server.createChannelIfNeeded(*channelName);
-		if ((int)(channel->getClients().size() + 1) >= channel->getClientLimit())
+		if (channel->getClientLimit() != -1 &&
+			(int)(channel->getClients().size() + 1) >= channel->getClientLimit())
 		{
-			msg.replyError(ERR_CHANNELISFULL, ":Cannot join channel (+l)");
+			msg.replyError(ERR_CHANNELISFULL, *channelName + " :Cannot join channel (+l)");
+			continue ;
 		}
-		else
+		std::string password = channel->getPassword();
+		if (!password.empty())
 		{
-			client->addChannel(channel);
-			channel->add(client);
-
-			ITER_CHANNEL_CLIENTS(*channel)
+			if (channelPasswords.size() == 0 || password != channelPasswords[0])
 			{
-				CLIENT()->sendRaw(":" + client->getIdentifier() +
-					" JOIN " + *channelName);
+				msg.replyError(ERR_BADCHANNELKEY, *channelName + " :Cannot join channel (+k)");
+				continue ;
 			}
-
-			if (!channel->getTopic().empty())
-				client->sendRpl(RPL_TOPIC, *channelName + " :" + channel->getTopic());
-			sendNames(client, *channel);
+			channelPasswords.erase(channelPasswords.begin());
 		}
+		if (channel->isInvitationOnly())
+		{
+			if (!channel->isInvited(client))
+			{
+				msg.replyError(ERR_INVITEONLYCHAN, *channelName + " :Cannot join channel (+i)");
+				continue ;
+			}
+			channel->wasInvited(client);
+		}
+
+
+		client->addChannel(channel);
+		channel->add(client);
+
+		ITER_CHANNEL_CLIENTS(*channel)
+		{
+			CLIENT()->sendRaw(":" + client->getIdentifier() +
+				" JOIN " + *channelName);
+		}
+
+		if (!channel->getTopic().empty())
+			client->sendRpl(RPL_TOPIC, *channelName + " :" + channel->getTopic());
+		sendNames(client, *channel);
 	}
 })
