@@ -51,11 +51,13 @@
 	{                                                                      \
 		msg.replyError(ERR_PASSWDMISMATCH,                                 \
 			":You haven't provided a password with PASS");                 \
+		server.disconnectClient(client->getFd());                          \
 		return ;                                                           \
 	}                                                                      \
 	if (!__client || !__client->isRegistered())                            \
 	{                                                                      \
 		msg.replyError(ERR_NOTREGISTERED, ":You have not registered");     \
+		server.disconnectClient(client->getFd());                          \
 		return ;                                                           \
 	}
 
