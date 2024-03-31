@@ -15,7 +15,13 @@
 #include "commands.hpp"
 
 DEFINE_CMD(User, {
-	IrcClient	*client	= msg.getClient();
+	if (!client || !client->getHasGivenPassword())
+	{
+		msg.replyError(ERR_PASSWDMISMATCH,
+			":You haven't provided a password with PASS");
+		server.disconnectClient(client->getFd());
+		return ;
+	}
 
 	if (!client->getHasGivenPassword())
 	{

@@ -34,6 +34,14 @@ static bool	isValid(std::string nick, unsigned int nicklen)
 }
 
 DEFINE_CMD(Nick, {
+	if (!client || !client->getHasGivenPassword())
+	{
+		msg.replyError(ERR_PASSWDMISMATCH,
+			":You haven't provided a password with PASS");
+		server.disconnectClient(client->getFd());
+		return ;
+	}
+
 	unsigned int	nicklen;
 	kdo::convert(nicklen, server.getConfig()["nicklen"]);
 
