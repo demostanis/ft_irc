@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:46:26 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/31 20:10:54 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,16 @@ DEFINE_CMD(Nick, {
 			msg.replyError(ERR_NICKNAMEINUSE, nick + " :Nickname already in use");
 			return ;
 		}
-		client->setNick(nick);
-		if (!client->getUsername().empty())
-			client->hasRegistered(server);
+		if (!client->isRegistered())
+		{
+			client->setNick(nick);
+			if (!client->getUsername().empty())
+				client->hasRegistered(server);
+		}
+		else
+		{
+			client->sendRaw(":" + client->getIdentifier() + " NICK :" + nick);
+			client->setNick(nick);
+		}
 	}
 })

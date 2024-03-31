@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:47:34 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/03/31 20:11:08 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,6 @@ void	IrcClient::sendRpl(int rpl, std::string msg) const
 
 void	IrcClient::hasRegistered(IrcServer &server)
 {
-	// TODO: get real IP
-	this->identifier = nick + "!~" + nick + "@127.0.0.1";
-
 	this->registered = true;
 	this->sendRpl(RPL_WELCOME,
 		"Welcome to " + this->config["source"] + ", " + this->nick + "!");
@@ -94,6 +91,9 @@ void	IrcClient::setHasGivenPassword(void)
 void	IrcClient::setNick(const std::string &nick)
 {
 	this->nick = nick;
+	// TODO: get real IP
+	this->identifier = nick + "!~" + nick + "@127.0.0.1";
+
 }
 
 const std::string	&IrcClient::getNick() const
