@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/31 20:10:54 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/01 03:14:10 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,34 @@ DEFINE_CMD(Nick, {
 		}
 		else
 		{
-			client->sendRaw(":" + client->getIdentifier() + " NICK :" + nick);
+			std::vector<IrcClient *>	usersWhoAlreadyReceivedTheNicknameChangeNotification;
+
+			ITER_CLIENT_CHANNELS(client)
+			{
+				if (CHANNEL())
+				{
+					ITER_CHANNEL_CLIENTS(*CHANNEL())
+					{
+						bool	hasAlreadySent = false;
+						for (std::vector<IrcClient*>::iterator user = usersWhoAlreadyReceivedTheNicknameChangeNotification.begin(); user != usersWhoAlreadyReceivedTheNicknameChangeNotification.end(); ++user)
+							if (*user == CLIENT())
+							{
+								hasAlreadySent = true;
+								break ;
+							}
+
+						if (!hasAlreadySent && CLIENT() != client)
+						{
+							CLIENT()->sendRaw(":" +
+								client->getIdentifier() + " NICK :" + nick);
+							usersWhoAlreadyReceivedTheNicknameChangeNotification
+								.push_back(CLIENT());
+						}
+					}
+				}
+			}
+			client->sendRaw(":" +
+				client->getIdentifier() + " NICK :" + nick);
 			client->setNick(nick);
 		}
 	}

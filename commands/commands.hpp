@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 20:50:24 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/01 02:43:45 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,6 @@
 			code;                                                \
 		}                                                        \
 	}
-
-#define ITER_CHANNEL_CLIENTS(channel)                        \
-	std::vector<IrcClient *>::const_iterator        clients; \
-	clients = (channel).getClients().begin();                \
-	for (; clients != (channel).getClients().end(); ++clients)
-
-#define CLIENT() \
-	(*clients)
-
-#define ITER_CLIENT_CHANNELS(client)                              \
-	std::map<std::string, IrcChannel*>::const_iterator	channels; \
-	channels = (client)->getChannels().begin();                   \
-	for (; channels != (client)->getChannels().end(); ++channels)
-
-#define CHANNEL() \
-	(channels->second)
 
 #define N_PARAMS() \
 	(msg.getParams().size())

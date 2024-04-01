@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 23:20:41 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/01 01:20:00 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ DEFINE_CMD(Join, {
 	for (; channelName != channelNames.end(); channelName++)
 	{
 		channel = server.createChannelIfNeeded(*channelName);
+		if (client->isInChannel(channel))
+			continue ;
 		if (channel->getClientLimit() != -1 &&
 			(int)(channel->getClients().size() + 1) >= channel->getClientLimit())
 		{
@@ -100,7 +102,6 @@ DEFINE_CMD(Join, {
 			}
 			channel->wasInvited(client);
 		}
-
 
 		client->addChannel(channel);
 		channel->add(client);

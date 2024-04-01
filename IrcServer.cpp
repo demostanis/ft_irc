@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/27 13:00:30 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/01 03:07:42 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,11 @@ int				IrcServer::connectClient(void)
 
 int		IrcServer::disconnectClient(int clientSocket)
 {
+	//IrcClient	*client;
+
+	// TODO: why doesn't it find the client?
+	//if (this->getClient(client, clientSocket))
+	//	quit(*this, client, "disconnect");
 	this->SocketTcpServer::disconnectClient(clientSocket);
 	this->lineBuf[clientSocket].clear();
 	std::cout << "[" << clientSocket << "]: disconnect" << std::endl;

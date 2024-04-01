@@ -16,8 +16,9 @@ SRC 		= Config.cpp\
 			  IrcServer.cpp\
 			  IrcChannel.cpp\
 			  main.cpp\
-			  lusers.cpp\
-			  motd.cpp
+			  common/lusers.cpp\
+			  common/motd.cpp\
+			  common/quit.cpp
 
 			  # lusers and motd fucking required because
 			  # of recursive references whatever

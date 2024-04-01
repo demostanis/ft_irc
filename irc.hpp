@@ -6,7 +6,7 @@
 /*   By: nlaerema <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:00:46 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/27 10:32:32 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/01 02:44:41 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,5 +24,22 @@
 
 #define IRC_NAME "ircserv"
 
+#define ITER_CHANNEL_CLIENTS(channel)                        \
+	std::vector<IrcClient *>::const_iterator        clients; \
+	clients = (channel).getClients().begin();                \
+	for (; clients != (channel).getClients().end(); ++clients)
+
+#define CLIENT() \
+	(*clients)
+
+#define ITER_CLIENT_CHANNELS(client)                              \
+	std::map<std::string, IrcChannel*>::const_iterator	channels; \
+	channels = (client)->getChannels().begin();                   \
+	for (; channels != (client)->getChannels().end(); ++channels)
+
+#define CHANNEL() \
+	(channels->second)
+
 void	motd(IrcClient *client);
 void	lusers(IrcServer &server, IrcClient *client);
+void	quit(IrcServer &server, IrcClient *client, std::string reason);
