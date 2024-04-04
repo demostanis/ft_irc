@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/31 20:11:08 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/05 00:29:47 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ bool	IrcClient::isRegistered(void) const
 
 void	IrcClient::sendRaw(std::string msg) const
 {
-	this->send(msg + CRLF, MSG_DONTWAIT);
+	this->send(msg + CRLF, MSG_DONTWAIT | MSG_NOSIGNAL);
 }
 
 void	IrcClient::sendRpl(int rpl, std::string msg) const
