@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/01 02:59:21 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 01:31:05 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ IrcChannel::IrcChannel()
 {
 	modes = 't';
 	clientLimit = DEFAULT_CLIENT_LIMIT;
+	invitationOnly = false;
 }
 
 IrcChannel::~IrcChannel()
