@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 21:40:07 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 01:23:25 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ static void	handleMode(
 			}
 			else
 				// TODO: error?
+				;
 			break ;
 		case 'l':
 			if (modeState == minus)
