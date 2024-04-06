@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/04/05 00:40:35 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 02:34:49 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,8 @@ ssize_t				IrcMessage::reply(std::string const &reply) const
 
 ssize_t				IrcMessage::replyError(int code, std::string const &reply) const
 {
-	return (this->reply(kdo::itoa(code) + " * " + reply));
+	return (this->reply(kdo::itoa(code) +
+		" " + this->client->getNick() + " " + reply));
 }
 
 IrcMessage			&IrcMessage::operator=(IrcMessage const &other)
