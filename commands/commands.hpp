@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/01 02:43:45 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 01:39:32 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 	namespace name {                                             \
 		void	handle(IrcServer &server, IrcMessage &msg) {     \
 			IrcClient	*client = msg.getClient();               \
+			if (client == NULL) return ;                         \
 			(void)server; (void)msg; (void)client;               \
 			code;                                                \
 		}                                                        \
@@ -38,7 +39,7 @@
 		server.disconnectClient(client->getFd());                          \
 		return ;                                                           \
 	}                                                                      \
-	if (!__client || !__client->isRegistered())                            \
+	if (!__client->isRegistered())                                         \
 	{                                                                      \
 		msg.replyError(ERR_NOTREGISTERED, ":You have not registered");     \
 		server.disconnectClient(client->getFd());                          \
@@ -46,8 +47,8 @@
 	}
 
 #define ENSURE_OP() \
-	IrcClient       *___client = msg.getClient();                                   \
-	if (!___client || ___client->getModes().find('o') == std::string::npos)          \
+	IrcClient       *___client = msg.getClient();                                  \
+	if (___client->getModes().find('o') == std::string::npos)                      \
 	{                                                                              \
 		msg.replyError(ERR_CHANOPRIVSNEEDED,                                       \
 			":You're not a channel operator");                                     \

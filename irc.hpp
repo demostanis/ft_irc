@@ -6,7 +6,7 @@
 /*   By: nlaerema <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 16:00:46 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/04/01 02:44:41 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 02:06:50 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,4 +42,4 @@
 
 void	motd(IrcClient *client);
 void	lusers(IrcServer &server, IrcClient *client);
-void	quit(IrcServer &server, IrcClient *client, std::string reason);
+void	quit(IrcClient *client, std::string reason);

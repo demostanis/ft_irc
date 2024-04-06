@@ -6,13 +6,13 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/01 02:44:19 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/01 02:44:36 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 02:06:35 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc.hpp"
 
-void	quit(IrcServer &server, IrcClient *client, std::string reason)
+void	quit(IrcClient *client, std::string reason)
 {
 	ITER_CLIENT_CHANNELS(client)
 	{
@@ -27,6 +27,4 @@ void	quit(IrcServer &server, IrcClient *client, std::string reason)
 			CHANNEL()->remove(client);
 		}
 	}
-	// TODO: client->disconnect()
-	server.disconnectClient(client->getFd());
 }

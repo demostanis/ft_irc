@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:09:44 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/01 02:45:14 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/06 02:08:49 by cgodard          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,5 +20,6 @@ DEFINE_CMD(Quit, {
 
 	if (N_PARAMS() > 0)
 		reason = PARAM(0);
-	quit(server, client, reason);
+	quit(client, reason);
+	server.disconnectClient(client->getFd());
 })
