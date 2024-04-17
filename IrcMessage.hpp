@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/29 23:20:49 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/14 17:10:12 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,14 @@ class IrcMessage
 		BNFFind			params;	
 		IrcMessageError	error;
 		IrcClient		*client;
+		std::string		msg;
 
 	public:
 							IrcMessage(IrcClient *client = NULL);
-							IrcMessage(std::string const &msg, IrcClient *client);
+							IrcMessage(IrcClient *client, std::string const &msg, size_t start = 0);
 							IrcMessage(IrcMessage const &other);
 							~IrcMessage(void);
-		IrcMessageError		parse(std::string const &msg, size_t start = 0);
+		IrcMessageError		parse(std::string &msg, size_t start = 0);
 		IrcMessageError		getError(void) const;
 		BNFFind	const		&getPrefix(void) const;
 		BNFFind const		&getCommand(void) const;

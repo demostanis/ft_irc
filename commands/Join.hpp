@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/01 01:20:00 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:33:28 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,11 @@ static void	sendNames(IrcClient *client, IrcChannel &channel)
 DEFINE_CMD(Join, {
 	ENSURE_AUTH();
 
-	std::string					channelNamesRaw;
-	std::vector<std::string>	channelNames;
-	std::vector<std::string>	channelPasswords;
-	IrcChannel					*channel;
+	std::string		channelNamesRaw;
+	std::string		keyRaw;
+	BNFFind			channelNames;
+	BNFFind			channelPasswords;
+	IrcChannel		*channel;
 
 	if (N_PARAMS() < 1)
 	{
@@ -46,9 +47,14 @@ DEFINE_CMD(Join, {
 	}
 
 	channelNamesRaw = PARAM(0);
-	channelNames = kdo::splitlist(channelNamesRaw);
+	listParser.parse(channelNamesRaw);
+	channelNames = listParser["word"];
 	if (N_PARAMS() >= 2)
-		channelPasswords = kdo::splitlist(PARAM(1));
+	{
+		keyRaw = PARAM(1);
+		listParser.parse(keyRaw);
+		channelPasswords = listParser["word"];
+	}
 
 	unsigned int	chanlimit;
 	kdo::convert(chanlimit, server.getConfig()["chanlimit"]);
@@ -61,10 +67,10 @@ DEFINE_CMD(Join, {
 	unsigned int	channellen;
 	kdo::convert(channellen, server.getConfig()["channellen"]);
 
-	std::vector<std::string>::iterator	channelName = channelNames.begin();
+	BNFFind::iterator	channelName = channelNames.begin();
 	for (; channelName != channelNames.end(); channelName++)
 	{
-		if (!IrcChannel::isValidName(*channelName, channellen))
+		if (!IrcChannel::isValidName(channelName->string(), channellen))
 		{
 			msg.replyError(ERR_BADCHANNAME, *channelName + " :Illegal channel name");
 			return ;
@@ -74,7 +80,7 @@ DEFINE_CMD(Join, {
 	channelName = channelNames.begin();
 	for (; channelName != channelNames.end(); channelName++)
 	{
-		channel = server.createChannelIfNeeded(*channelName);
+		channel = server.createChannelIfNeeded(channelName->string());
 		if (client->isInChannel(channel))
 			continue ;
 		if (channel->getClientLimit() != -1 &&

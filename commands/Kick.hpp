@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 14:16:28 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/27 14:45:33 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:41:16 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,13 @@ DEFINE_CMD(Kick, {
 	}
 
 	IrcClient	*kickedClient = NULL;
-	std::vector<std::string>	kicketees = kdo::splitlist(PARAM(1));
+	std::string	kicketeesRaw = PARAM(1);
+	BNFFind		kicketees;
 
-	for (std::vector<std::string>::iterator	kicketee = kicketees.begin();
+	listParser.parse(kicketeesRaw);
+	kicketees = listParser["word"];
+
+	for (BNFFind::iterator	kicketee = kicketees.begin();
 		kicketee != kicketees.end(); ++kicketee)
 	{
 		ITER_CHANNEL_CLIENTS(*channel)

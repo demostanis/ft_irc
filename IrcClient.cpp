@@ -27,7 +27,7 @@ IrcClient::IrcClient(Config &config):	config(config),
 {
 }
 
-IrcClient::IrcClient(Config &config, int socketConnected):	SocketTcpClient(socketConnected),
+IrcClient::IrcClient(Config &config, int socketConnected):	TcpClient(socketConnected),
 															config(config),
 															registered(false),
 															hasGivenPassword(false)

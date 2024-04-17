@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/03/27 12:49:28 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:16:41 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ class IrcMessage;
 class IrcClient;
 class IrcChannel;
 
-class IrcServer: public SocketTcpServer
+class IrcServer: public TcpServer
 {
 	private:
 		std::map<int, std::string>  		lineBuf;
 		std::map<std::string, IrcChannel>	channels;
-		std::queue<IrcMessage>				msgQueue;
+		std::queue<IrcMessage *>			msgQueue;
 		Config								config;
 		int									epoll;
 
@@ -36,16 +36,16 @@ class IrcServer: public SocketTcpServer
 						~IrcServer(void);
 		int     		accept(IrcClient *&client);
 		int				receiveMessage(int clientSocket);
-		int				getNextMessage(IrcMessage &msg);
+		int				getNextMessage(IrcMessage *&msg);
 		int				connectClient(void);
 		int				disconnectClient(int clientSocket);
 		int     		getClient(IrcClient *&client, int clientSocket);
-		bool			isNickInUse(std::string nick);
-		IrcClient		*getClientByNick(std::string nick);
+		bool			isNickInUse(std::string const &nick);
+		IrcClient		*getClientByNick(std::string const &nick);
 		int				userCount(void);
-		bool			channelExists(std::string name);
-		IrcChannel		*getChannel(std::string name);
-		IrcChannel		*createChannelIfNeeded(std::string name);
+		bool			channelExists(std::string const &name);
+		IrcChannel		*getChannel(std::string const &name);
+		IrcChannel		*createChannelIfNeeded(std::string const &name);
 		int				connect(std::string const &filename);
 		void			disconnect(void);
 		Config			&getConfig(void);

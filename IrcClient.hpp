@@ -14,7 +14,7 @@
 
 #include "irc.hpp"
 
-class IrcClient: public SocketTcpClient
+class IrcClient: public TcpClient
 {
 	private:
 		Config				&config;
