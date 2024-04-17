@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/06 01:23:25 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:36:10 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ typedef enum
 
 static void	handleMode(
 	IrcChannel *channel, char mode,
-	std::vector<std::string>	&modeArgs, state modeState
+	BNFFind	&modeArgs, state modeState
 )
 {
 	switch (mode)
@@ -39,7 +39,7 @@ static void	handleMode(
 			else if (modeArgs.size() > 0 &&
 				modeArgs[0].find(' ') == std::string::npos)
 			{
-				channel->setPassword(modeArgs[0]);
+				channel->setPassword(modeArgs[0].string());
 				modeArgs.erase(modeArgs.begin());
 			}
 			else
@@ -85,12 +85,17 @@ DEFINE_CMD(Mode, {
 					server.getChannel(param)->getModes());
 			else
 			{
-				std::string					modes = PARAM(1);
-				std::vector<std::string>	modeArgs;
-				state						modeState;
+				std::string		modes = PARAM(1);
+				std::string		modeArgsRaw;
+				BNFFind			modeArgs;
+				state			modeState;
 
 				if (N_PARAMS() >= 3)
-					modeArgs = kdo::splitlist(PARAM(2));
+				{
+					modeArgsRaw = PARAM(2);
+					listParser.parse(modeArgsRaw);
+					modeArgs = listParser["word"];
+				}
 				if (modes[0] != '+' && modes[0] != '-')
 					return ;
 				for (size_t i = 0; i < modes.length(); i++)

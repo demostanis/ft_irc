@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:08:09 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:27:14 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:42:53 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,10 @@ static void	handleCommand(IrcServer &server, IrcMessage &msg)
 	size_t		i;
 
 	found = false;
-	command = msg.getCommand()[0].getValue();
+	command = msg.getCommand()[0].string();
 	for (i = 0; i < sizeof(commandNames)/sizeof(commandNames[0]); i++)
 	{
-		if (commandNames[i] == kdo::toUppercase(command))
+		if (commandNames[i] == kdo::strupper(command))
 		{
 			commandHandlers[i](server, msg);
 			found = true;
@@ -82,7 +82,7 @@ static void	handleCommand(IrcServer &server, IrcMessage &msg)
 static int	listenForConnections(std::string const &filename)
 {
 	IrcServer	server(filename);
-	IrcMessage	msg;
+	IrcMessage	*msg;
 	
 	if (!server.isConnected())
 	{
@@ -95,8 +95,8 @@ static int	listenForConnections(std::string const &filename)
 	{
 		if (server.getNextMessage(msg))
 			break;
-		if (msg.getCommand().size() > 0)
-			handleCommand(server, msg);
+		if (msg->getCommand().size() > 0)
+			handleCommand(server, *msg);
 	}
 	return (EXIT_SUCCESS);
 }

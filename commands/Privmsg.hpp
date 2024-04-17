@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 22:36:39 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 22:11:09 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:37:38 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@ DEFINE_CMD(Privmsg, {
 		return ;
 	}
 
-	std::string					targetsRaw = PARAM(0);
-	std::vector<std::string>	targets = kdo::splitlist(targetsRaw);
+	std::string		targetsRaw = PARAM(0);
+	BNFFind			targets;
+
+	listParser.parse(targetsRaw);
+	targets = listParser["word"];
 
 	unsigned int	chanlimit;
 	kdo::convert(chanlimit, server.getConfig()["chanlimit"]);
@@ -39,12 +42,12 @@ DEFINE_CMD(Privmsg, {
 		return ;
 	}
 
-	std::vector<std::string>::iterator	cr = targets.begin();
+	BNFFind::iterator	cr = targets.begin();
 	for (; cr != targets.end(); ++cr)
 	{
 		if ((*cr)[0] == '#')
 		{
-			IrcChannel	*channel = server.getChannel(*cr);
+			IrcChannel	*channel = server.getChannel(cr->string());
 			if (!client->isInChannel(channel))
 			{
 				msg.replyError(ERR_CANNOTSENDTOCHAN, ":Cannot send to channel");
@@ -57,7 +60,7 @@ DEFINE_CMD(Privmsg, {
 		}
 		else
 		{
-			IrcClient	*targetClient = server.getClientByNick(*cr);
+			IrcClient	*targetClient = server.getClientByNick(cr->string());
 			if (targetClient == client || targetClient == NULL)
 			{
 				msg.replyError(ERR_NOSUCHNICK, ":No such nick/channel");

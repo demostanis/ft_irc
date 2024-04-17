@@ -6,7 +6,7 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/04/06 02:11:37 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/14 19:33:43 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,10 @@ int				IrcServer::receiveMessage(int clientSocket)
 	std::string		line;
 	size_t			lineStart;
 	size_t			lineEnd;
-	IrcMessage		msg;
+	IrcMessage		*msg;
 
 	if (this->getClient(client, clientSocket))
 		return (EXIT_FAILURE);
-	msg.setClient(client);
 	if (client->recv(str, MSG_DONTWAIT) < 0)
 		return (EXIT_FAILURE);
 	line = this->lineBuf[clientSocket] + str;
@@ -57,7 +56,7 @@ int				IrcServer::receiveMessage(int clientSocket)
 	lineEnd = line.find('\n');
 	while (lineEnd != std::string::npos)
 	{
-		msg.parse(line, lineStart);
+		msg = new IrcMessage(client, line, lineStart);
 		this->msgQueue.push(msg);
 		lineStart = lineEnd + 1;
 		lineEnd = line.find('\n', lineStart);
@@ -66,7 +65,7 @@ int				IrcServer::receiveMessage(int clientSocket)
 	return (EXIT_SUCCESS);
 }
 
-int				IrcServer::getNextMessage(IrcMessage &msg)
+int				IrcServer::getNextMessage(IrcMessage *&msg)
 {
 	struct epoll_event	events[this->backlog];
 	int					readyFd;
@@ -112,7 +111,7 @@ int				IrcServer::connectClient(void)
 	if (epoll_ctl(this->epoll, EPOLL_CTL_ADD, newClient->getFd(), &event))
 	{
 		perror("epoll_ctl");
-		this->SocketTcpServer::disconnectClient(newClient->getFd());
+		this->TcpServer::disconnectClient(newClient->getFd());
 		return (EXIT_ERRNO);
 	}
 	std::cout << "[" << newClient->getFd() << "]: connect" << std::endl;
@@ -124,8 +123,12 @@ int		IrcServer::disconnectClient(int clientSocket)
 	IrcClient	*client;
 
 	if (this->getClient(client, clientSocket))
+	{
+		if (!client->isConnected())
+			return (EXIT_SUCCESS);
 		quit(client, "disconnect");
-	this->SocketTcpServer::disconnectClient(clientSocket);
+	}
+	this->TcpServer::disconnectClient(clientSocket);
 	this->lineBuf[clientSocket].clear();
 	std::cout << "[" << clientSocket << "]: disconnect" << std::endl;
 	return (epoll_ctl(this->epoll, EPOLL_CTL_DEL, clientSocket, NULL));
@@ -133,7 +136,7 @@ int		IrcServer::disconnectClient(int clientSocket)
 
 int				IrcServer::getClient(IrcClient *&client, int clientSocket)
 {
-	std::map<int, SocketTcpClient *>::iterator  cr;
+	std::map<int, TcpClient *>::iterator  cr;
 
     cr = this->clients.find(clientSocket);
     if (cr == this->clients.end())
@@ -142,25 +145,25 @@ int				IrcServer::getClient(IrcClient *&client, int clientSocket)
     return (EXIT_SUCCESS);
 }
 
-bool			IrcServer::isNickInUse(std::string nick)
+bool			IrcServer::isNickInUse(std::string const &nick)
 {
-	std::map<int, SocketTcpClient *>::iterator	cr;
+	std::map<int, TcpClient *>::iterator	cr;
 
 	for (cr = this->clients.begin(); cr != clients.end(); cr++)
 	{
-		if (kdo::iequals(static_cast<IrcClient *>(cr->second)->getNick(), nick))
+		if (!kdo::stricmp(static_cast<IrcClient *>(cr->second)->getNick(), nick))
 			return (true);
 	}
 	return (false);
 }
 
-IrcClient		*IrcServer::getClientByNick(std::string nick)
+IrcClient		*IrcServer::getClientByNick(std::string const &nick)
 {
-	std::map<int, SocketTcpClient *>::iterator	cr;
+	std::map<int, TcpClient *>::iterator	cr;
 
 	for (cr = this->clients.begin(); cr != clients.end(); cr++)
 	{
-		if (kdo::iequals(static_cast<IrcClient *>(cr->second)->getNick(), nick))
+		if (!kdo::stricmp(static_cast<IrcClient *>(cr->second)->getNick(), nick))
 			return (static_cast<IrcClient *>(cr->second));
 	}
 	return (NULL);
@@ -210,7 +213,7 @@ int				IrcServer::connect(std::string const &filename)
 	CHECK_INT(channellen, 0);
 	CHECK_INT(nicklen, 0);
 
-	error = this->SocketTcpServer::connect(port, backlog);
+	error = this->TcpServer::connect(port, backlog);
 	if (error)
 	{
 		if (error != EXIT_ERRNO)
@@ -239,22 +242,22 @@ int				IrcServer::connect(std::string const &filename)
 
 void			IrcServer::disconnect(void)
 {
-	this->SocketTcpServer::disconnect();
+	this->TcpServer::disconnect();
 	if (this->epoll != INVALID_FD)
 		::close(this->epoll);
 }
 
-bool	IrcServer::channelExists(std::string name)
+bool	IrcServer::channelExists(std::string const &name)
 {
 	return (channels.find(name) != channels.end());
 }
 
-IrcChannel		*IrcServer::getChannel(std::string name)
+IrcChannel		*IrcServer::getChannel(std::string const &name)
 {
 	return (&channels[name]);
 }
 
-IrcChannel		*IrcServer::createChannelIfNeeded(std::string name)
+IrcChannel		*IrcServer::createChannelIfNeeded(std::string const &name)
 {
 	if (channels.find(name) == channels.end())
 		channels[name].setName(name);

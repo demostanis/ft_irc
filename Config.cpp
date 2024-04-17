@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 16:06:23 by cgodard           #+#    #+#             */
-/*   Updated: 2024/03/29 20:39:54 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/14 18:56:13 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static BNFVar	_kvParser(void)
 	BNFVar  nowheq("nowheq", BNFRange(0x01, 0x07) | BNFRange(0x0E, 0x1F)
 			| BNFRange (0x21, 0x3C) | BNFRange(0x3E, 0XFF));
 	BNFVar	nowh("nowh", nowheq | eq);
-	BNFVar	key("key", nowheq & (nowheq | (BLANK - 0 & nowheq)) - 0);
-	BNFVar	value("value", nowh & (nowh | (BLANK - 0 & nowh)) - 0);
-	BNFVar	kv("kv", BLANK - 0 & key & BLANK - 0 & eq & BLANK - 0 & value & BLANK - 0 & '\0');
+	BNFVar	key("key", nowheq & *(nowheq | (*BLANK & nowheq)));
+	BNFVar	value("value", nowh & *(nowh | (*BLANK & nowh)));
+	BNFVar	kv("kv", *BLANK & key & *BLANK & eq & *BLANK & value & *BLANK);
 
 	return (kv);
 }
@@ -39,6 +39,10 @@ char const	*Config::mandatoryKeys[] = {
 
 BNFVar Config::kvParser(_kvParser());
 
+std::string			Config::parseError(std::string const &filename, size_t lineCount)
+{
+	return (filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(Config::kvParser.size() + 1));
+}
 
 Config::Config(void)
 {
@@ -47,8 +51,7 @@ Config::Config(void)
 void				Config::read(std::string const &filename)
 {
 	std::ifstream	file(filename.c_str());
-	t_uint			lineCount(1);
-	ssize_t			errorPos;
+	size_t			lineCount(1);
 	std::string		line;
 	BNFFind			key;
 	BNFFind			value;
@@ -62,26 +65,26 @@ void				Config::read(std::string const &filename)
 		if (line.empty())
 			break;
 		Config::kvParser.parse(line);
+
+		kdo::State	state = Config::kvParser.getState();
 		key = Config::kvParser.find("key", 3);
 		value = Config::kvParser.find("value", 3);
-		errorPos = Config::kvParser.getErrorLen();
-		if (errorPos != BNF_ERROR_LEN_NONE)
+		if (Config::kvParser.getState().fail())
 		{
-			errorPos++;
 			if (key.empty())
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos) + ": missing key");
-			else if (key[0].getErrorLen() != BNF_ERROR_LEN_NONE)
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos) + ": invalid key");
-			else if (Config::kvParser.find("eq", 3).isSuccess().empty())
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos) + ": missing '='");
+				throw std::runtime_error(Config::parseError(filename, lineCount) + ": missing key");
+			else if (key[0].getState().fail())
+				throw std::runtime_error(Config::parseError(filename, lineCount) + ": invalid key");
+			else if (Config::kvParser.find("eq", 3).good().empty())
+				throw std::runtime_error(Config::parseError(filename, lineCount) + ": missing '='");
 			else if (value.empty())
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos) + ": missing value");
-			else if (value[0].getErrorLen() != BNF_ERROR_LEN_NONE)
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos) + ": invalid value");
+				throw std::runtime_error(Config::parseError(filename, lineCount) + ": missing value");
+			else if (value[0].getState().fail())
+				throw std::runtime_error(Config::parseError(filename, lineCount) + ": invalid value");
 			else
-				throw std::runtime_error(filename + ':' + kdo::itoa(lineCount) + ':' + kdo::itoa(errorPos));
+				throw std::runtime_error(Config::parseError(filename, lineCount));
 		}
-		(*this)[key[0].getValue()] = value[0].getValue();
+		(*this)[key[0].string()] = value[0].string();
 		lineCount++;
 	}
 	for (cr = 0; Config::mandatoryKeys[cr]; cr++)

@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/06 01:39:32 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/17 19:26:56 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 	(msg.getParams().size())
 
 #define PARAM(nth) \
-	(msg.getParams()[nth].getValue())
+	(msg.getParams()[nth].string())
 
 #define ENSURE_AUTH()                                                      \
 	IrcClient       *__client = msg.getClient();                           \
@@ -54,6 +54,9 @@
 			":You're not a channel operator");                                     \
 		return ;                                                                   \
 	}                                                                              \
+
+BNFVar	word("word",  BNFVar("word", ~(BNFRange(0x01, 0x2b) | BNFRange(0x2d, 0xff))));
+BNFVar	listParser("listParser", word & *(',' & word));
 
 enum
 {
