@@ -23,12 +23,19 @@ SRC 		= Config.cpp\
 			  # lusers and motd fucking required because
 			  # of recursive references whatever
 
+BOT_SRC     = $(filter-out main.cpp, $(SRC))\
+			  bot.cpp
+
 OBJ 		= $(SRC:.cpp=.o)
+BOT_OBJ		= $(BOT_SRC:.cpp=.o)
 
 all: $(NAME)
 
 $(NAME): $(KDOLIB) $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJ) $(KDOLIB) $(LDLIBS)
+
+bot: $(KDOLIB) $(BOT_OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $(BOT_OBJ) $(KDOLIB) $(LDLIBS)
 
 $(KDOLIB): $(KDO)
 	$(MAKE) -C $(KDO)
