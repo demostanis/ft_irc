@@ -6,12 +6,33 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>	+#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/04/14 19:33:43 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/04/18 16:37:57 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc.hpp"
 #include "IrcServer.hpp"
+
+std::string	IrcServer::findIp(struct sockaddr_storage *addr)
+{
+	char	ip[INET6_ADDRSTRLEN];
+    void	*addrPtr;
+
+    if (addr->ss_family == AF_INET)
+	{
+        struct sockaddr_in *ipv4 = (struct sockaddr_in *)addr;
+        addrPtr = &(ipv4->sin_addr);
+    }
+	else
+	{
+        struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)addr;
+        addrPtr = &(ipv6->sin6_addr);
+    }
+
+    inet_ntop(addr->ss_family, addrPtr, ip, sizeof(ip));
+
+    return (ip);
+}
 
 IrcServer::IrcServer(std::string const &filename):	epoll(INVALID_FD)
 {
@@ -27,13 +48,15 @@ int				IrcServer::accept(IrcClient *&client)
 {
 	struct sockaddr_storage clientAddr;
     socklen_t               addrSize;
+	std::string				clientIp;
     int                     clientSocket;
 
     addrSize = sizeof(clientAddr);
     clientSocket = ::accept(this->fd, (struct sockaddr *)&clientAddr, &addrSize);
     if (clientSocket == INVALID_FD)
-        return (EXIT_ERRNO);
-    this->clients[clientSocket] = new IrcClient(this->config, clientSocket);
+		return (EXIT_ERRNO);
+	clientIp = this->findIp(&clientAddr);
+    this->clients[clientSocket] = new IrcClient(this->config, clientIp, clientSocket);
     client = static_cast<IrcClient *>(this->clients[clientSocket]);
     return (EXIT_SUCCESS);
 }
@@ -123,11 +146,10 @@ int		IrcServer::disconnectClient(int clientSocket)
 	IrcClient	*client;
 
 	if (this->getClient(client, clientSocket))
-	{
-		if (!client->isConnected())
-			return (EXIT_SUCCESS);
-		quit(client, "disconnect");
-	}
+		return (EXIT_FAILURE);
+	while (!this->msgQueue.empty() && this->msgQueue.front()->getClient() == client)
+		this->msgQueue.pop();
+	quit(client, "disconnect");
 	this->TcpServer::disconnectClient(clientSocket);
 	this->lineBuf[clientSocket].clear();
 	std::cout << "[" << clientSocket << "]: disconnect" << std::endl;

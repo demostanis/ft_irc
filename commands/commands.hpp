@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 09:46:25 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/17 19:26:56 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:18:16 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 		return ;                                                                   \
 	}                                                                              \
 
-BNFVar	word("word",  BNFVar("word", ~(BNFRange(0x01, 0x2b) | BNFRange(0x2d, 0xff))));
+BNFVar	word("word",  ~(BNFRange(0x01, 0x2b) | BNFRange(0x2d, 0xff)));
 BNFVar	listParser("listParser", word & *(',' & word));
 
 enum

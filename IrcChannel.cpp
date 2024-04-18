@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 23:39:06 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/06 01:31:05 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/18 16:35:08 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ IrcChannel::IrcChannel()
 	modes = 't';
 	clientLimit = DEFAULT_CLIENT_LIMIT;
 	invitationOnly = false;
+	topicForOpsOnly = true;
 }
 
 IrcChannel::~IrcChannel()
@@ -131,7 +132,11 @@ void				IrcChannel::add(IrcClient *user)
 
 void				IrcChannel::remove(IrcClient *user)
 {
-	clients.erase(std::find(clients.begin(), clients.end(), user));
+	std::vector<IrcClient *>::iterator	it;
+
+	it = std::find(clients.begin(), clients.end(), user);
+	if (it != clients.end())
+		clients.erase(it);
 }
 
 bool				IrcChannel::isInvitationOnly(void) const

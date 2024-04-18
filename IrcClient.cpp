@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:07:59 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/05 00:29:47 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/18 16:34:50 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,12 @@ enum
 	RPL_ISUPPORT = 5
 };
 
-IrcClient::IrcClient(Config &config):	config(config),
-										registered(false),
-										hasGivenPassword(false)
-{
-}
+IrcClient::IrcClient(Config &config, std::string const &ip, int socketConnected):	TcpClient(socketConnected),
+																					config(config),
+																					registered(false),
+																					hasGivenPassword(false),
+																					ip(ip)
 
-IrcClient::IrcClient(Config &config, int socketConnected):	TcpClient(socketConnected),
-															config(config),
-															registered(false),
-															hasGivenPassword(false)
 {
 }
 
@@ -92,8 +88,7 @@ void	IrcClient::setNick(const std::string &nick)
 {
 	this->nick = nick;
 	// TODO: get real IP
-	this->identifier = nick + "!~" + nick + "@127.0.0.1";
-
+	this->identifier = nick + "!~" + nick + "@" + this->ip;
 }
 
 const std::string	&IrcClient::getNick() const
@@ -134,6 +129,11 @@ const std::string	&IrcClient::getRealname() const
 const std::string	&IrcClient::getIdentifier() const
 {
 	return (this->identifier);
+}
+
+const std::string	&IrcClient::getIp() const
+{
+	return (this->ip);
 }
 
 void				IrcClient::setIdentity(const std::string &username, const std::string &realname)

@@ -31,7 +31,7 @@ int	readConfig(Config &config, const std::string &filename)
 	return (EXIT_SUCCESS);
 }
 
-class Bot : public SocketTcpClient
+class Bot : public TcpClient
 {
 	private:
 		void				sendCommand(std::string name, std::string content);
@@ -47,7 +47,7 @@ class Bot : public SocketTcpClient
 		int					run();
 };
 
-Bot::Bot(Config &config) : SocketTcpClient(config["host"], config["port"])
+Bot::Bot(Config &config) : TcpClient(config["host"], config["port"])
 {
 	name = config["bot_name"];
 	if (name.empty())

@@ -6,13 +6,14 @@
 /*   By: nlaerema <nlaerema@student.42lehavre.fr>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 10:58:17 by nlaerema          #+#    #+#             */
-/*   Updated: 2024/04/17 19:16:41 by nlaerema         ###   ########.fr       */
+/*   Updated: 2024/04/18 13:59:53 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "irc.hpp"
+#include <arpa/inet.h>
 
 #define IRC_SERVER_DEFAULT_BACKLOG	128
 #define IRC_SERVER_DEFAULT_PORT		"ircd"
@@ -30,6 +31,8 @@ class IrcServer: public TcpServer
 		std::queue<IrcMessage *>			msgQueue;
 		Config								config;
 		int									epoll;
+
+		static std::string	findIp(struct sockaddr_storage *addr);
 
 	public:
 						IrcServer(std::string const &filename);

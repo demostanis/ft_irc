@@ -6,7 +6,7 @@
 /*   By: cgodard <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 21:06:54 by cgodard           #+#    #+#             */
-/*   Updated: 2024/04/06 02:08:54 by cgodard          ###   ########.fr       */
+/*   Updated: 2024/04/18 13:30:56 by nlaerema         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class IrcClient: public TcpClient
 		Config				&config;
 		bool				registered;
 		bool				hasGivenPassword;
+		std::string			ip;
 		std::string			nick;
 		std::string			identifier;
 		std::string			username;
@@ -29,8 +30,7 @@ class IrcClient: public TcpClient
 		std::map<std::string, IrcChannel*>	channels;
 
 	public:
-							IrcClient(Config &config);
-							IrcClient(Config &config, int socketConnected);
+							IrcClient(Config &config, std::string const &ip, int socketConnected);
 							~IrcClient(void);
 		bool				isRegistered(void) const;
 		void				sendRaw(std::string msg) const;
@@ -45,6 +45,7 @@ class IrcClient: public TcpClient
 		const std::string	&getIdentifier() const;
 		const std::string	&getNick() const;
 		const std::string	&getModes() const;
+		const std::string	&getIp() const;
 		void				delMode(char mode);
 		void				addMode(char mode);
 		Config				&getConfig(void);
